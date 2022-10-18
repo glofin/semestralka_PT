@@ -14,6 +14,7 @@ public class Hlavni {
 	private static Velbloud[] velbloudi
 	
 	private static Pozadavek[] pozadavky;
+	
 	*/
 	
 	
@@ -41,8 +42,8 @@ public class Hlavni {
 
 		int konec;
 		int zacatek = 0;
-		while((konec = s.indexOf("🏜", zacatek)) > 0) {
-			zacatek = s.lastIndexOf("🐪", konec);
+		while((konec = s.indexOf("đźŹś", zacatek)) > 0) {
+			zacatek = s.lastIndexOf("đź�Ş", konec);
 			s = (s.substring(0, zacatek)) + " " + (s.substring(konec+2));
 		}
 	
