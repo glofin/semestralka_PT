@@ -6,17 +6,6 @@ import java.util.Scanner;
 
 public class Hlavni {
 	
-	/**
-	private static Sklad[] sklady;
-	
-	private static Oaza[] oazy;
-	
-	private static Velbloud[] velbloudi
-	
-	private static Pozadavek[] pozadavky;
-	
-	*/
-	
 	
 	public static void main(String[] args) {
 		
