@@ -15,6 +15,7 @@ public class Hlavni {
 	
 	private static Pozadavek[] pozadavky;
 	
+	
 	*/
 	
 	
