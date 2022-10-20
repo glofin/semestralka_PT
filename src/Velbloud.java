@@ -8,36 +8,58 @@ public class Velbloud {
  	public double rychlost;
  	
  	/** Maximalni vzdalenost, kterou velbloud ujde po napiti */
- 	private double maxPiti;
+ 	private double maxUjde;
  	
  	/** Aktualni vzdalenost, kterou zvladne velbloud ujit pred napitim */
- 	public double piti;
+ 	public double ujde;
  	
  	/** Doba, za kterou se velbloud napije */
  	public double casPiti;
 
  	
- 	private Velbloud(double rych, double mPiti, double cPiti) {
+ 	private Velbloud(double rych, double mUjde, double cPiti) {
  		rychlost = rych;
- 		maxPiti = mPiti;
+ 		maxUjde = mUjde;
  		casPiti = cPiti;
- 		piti = mPiti;
+ 		ujde = mUjde;
  	}
  	
  	/**
- 	 * Vygeneruje noveho velblouda s nahodnym druhem
+ 	 * Nahodne vygeneruje velblouda 
  	 * @return 	nove vygenerovany velbloud
  	 */
- 	public Velbloud generujVelblouda() {
- 		//TODO
- 		return new Velbloud(1,1,1);
+ 	public static Velbloud generujVelblouda() {
+
+ 		DruhVelblouda druh = generujDruh();
+			double rangeRychlost = druh.maxV - druh.minV;
+			double rychlost = druh.maxV - (Math.random() * rangeRychlost);
+			double rangePiti = druh.maxD - druh.minD;
+			double mPiti = druh.maxD - (Math.random() * rangePiti);
+			
+			return new Velbloud(rychlost, mPiti, druh.casPiti);
+
  	}
  	
  	/**
+ 	 * Nahodne vybere druh velblouda (s ohledem na atribut pomer)
+ 	 * @return	nahodny druh velblouda
+ 	 */
+ 	private static DruhVelblouda generujDruh() {
+ 		double sance = 0;
+ 		for(int i = 0; i < druhy.length; i++) {
+ 			sance += druhy[i].pomer;
+ 			if(Math.random() <= sance) {
+ 				return druhy[i];
+ 			}
+ 		}
+		return null;
+	}
+
+	/**
  	 *  Velbloud se napije a doplni si zasobu vody
  	 */
  	public void Napij() {
- 		piti = maxPiti;
+ 		ujde = maxUjde;
  	}
  		
  	

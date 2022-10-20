@@ -9,13 +9,13 @@ public class Hlavni {
 	public static void main(String[] args) {
 		
 		try {
-			String vstup = souborDoStringu("data/sparse_bit_small.txt");
+			String vstup = souborDoStringu("data/centre_small.txt");
 			nacti(vstup);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		
+
 	}
 	
 	/**
