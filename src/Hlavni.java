@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class Hlavni {
 	
+	
 	public static void main(String[] args) {
 		
 		try {
@@ -45,39 +46,41 @@ public class Hlavni {
 	 * @throws IOException	
 	 */
 	private static void nacti(String vstup) {
-		
-		Scanner sc = new Scanner(vstup);
-		sc.useLocale(Locale.US);
-		
-		Sklad[] sklady = new Sklad[sc.nextInt()];
-		for(int i = 0; i < sklady.length; i++) {
-			sklady[i] = new Sklad(sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextInt(),sc.nextInt());
+		Scanner sc = null;
+		try {
+			sc = new Scanner(vstup);
+			sc.useLocale(Locale.US);
+			
+			Sklad[] sklady = new Sklad[sc.nextInt()];
+			for(int i = 0; i < sklady.length; i++) {
+				sklady[i] = new Sklad(sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextInt(),sc.nextInt());
+			}
+			
+			Oaza[] oazy = new Oaza[sc.nextInt()];
+			for(int i = 0; i < oazy.length; i++) {
+				oazy[i] = new Oaza(sc.nextDouble(),sc.nextDouble());
+			}
+			
+			//cesty zatim preskoci a nijak je neuklada 
+			int cesty = sc.nextInt();
+			for(int i = 0; i < cesty; i++) {
+				sc.nextInt();	sc.nextInt();
+			}
+			
+			DruhVelblouda[] DruhyVelblouda = new DruhVelblouda[sc.nextInt()];
+			for(int i = 0; i < DruhyVelblouda.length; i++) {
+				DruhyVelblouda[i] = new DruhVelblouda(sc.next(), sc.nextDouble(), sc.nextDouble(),
+						sc.nextDouble(), sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
+			}
+			Velbloud.setDruhy(DruhyVelblouda);
+			
+			Pozadavek[] pozadavky =  new Pozadavek[sc.nextInt()];
+			for (int i = 0; i < pozadavky.length; i++) {
+				pozadavky[i] = new Pozadavek(sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
+			}
+		} finally {
+			sc.close();
 		}
-		
-		Oaza[] oazy = new Oaza[sc.nextInt()];
-		for(int i = 0; i < oazy.length; i++) {
-			oazy[i] = new Oaza(sc.nextDouble(),sc.nextDouble());
-		}
-		
-		//cesty zatim preskoci a nijak je neuklada 
-		int cesty = sc.nextInt();
-		for(int i = 0; i < cesty; i++) {
-			sc.nextInt();	sc.nextInt();
-		}
-		
-		DruhVelblouda[] DruhyVelblouda = new DruhVelblouda[sc.nextInt()];
-		for(int i = 0; i < DruhyVelblouda.length; i++) {
-			DruhyVelblouda[i] = new DruhVelblouda(sc.next(), sc.nextDouble(), sc.nextDouble(),
-					sc.nextDouble(), sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
-		}
-		Velbloud.setDruhy(DruhyVelblouda);
-		
-		Pozadavek[] pozadavky =  new Pozadavek[sc.nextInt()];
-		for (int i = 0; i < pozadavky.length; i++) {
-			pozadavky[i] = new Pozadavek(sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
-		}
-		
-		sc.close();
 		
 	}
 	

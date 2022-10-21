@@ -1,7 +1,7 @@
 /**
- * Instance tridy {@code DruhVelblouda} predstavuji druhy velbloudu, ktere se mohou vyskytovat ve stadu 
+ * Instance tridy {@code DruhVelblouda} predstavuji druhy velbloudu, ke kterym mohou prisluset jednotlivy velbloudi
  */
-public class  DruhVelblouda {
+public class DruhVelblouda {
 	
 	String jmeno;
 	double minV;

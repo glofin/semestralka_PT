@@ -1,20 +1,22 @@
-
+/**
+ * Instance tridy {@code Velbloud} predstavuji jednotlive velbloudy
+ */
 public class Velbloud {
 	
 	/** Druhy, ktere je mozne generovat */
  	private static DruhVelblouda[] druhy;
  	
  	/** Rychlost velblouda */
- 	public double rychlost;
+ 	public final double rychlost;
  	
  	/** Maximalni vzdalenost, kterou velbloud ujde po napiti */
- 	private double maxUjde;
+ 	private final double maxUjde;
+ 	
+ 	/** Doba, za kterou se velbloud napije */
+ 	public final double casPiti;
  	
  	/** Aktualni vzdalenost, kterou zvladne velbloud ujit pred napitim */
  	public double ujde;
- 	
- 	/** Doba, za kterou se velbloud napije */
- 	public double casPiti;
 
  	
  	private Velbloud(double rych, double mUjde, double cPiti) {
