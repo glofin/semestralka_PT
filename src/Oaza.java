@@ -1,13 +1,8 @@
 /**
  * Instance tridy {@code Oaza} predstavuji jednotlive oazy, do kterych mohou chodit velbloudi
  */
-public class Oaza {
+public class Oaza extends AbstractNode {
 
-	/** Souradnice x */
-	double x;
-	/** Souradnice y */
-	double y;
-	
 	/**
 	 * Vytvori Oazu na urcenych souradnicich
 	 * 

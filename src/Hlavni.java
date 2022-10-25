@@ -6,6 +6,10 @@ import java.util.Scanner;
 
 public class Hlavni {
 	
+	static AbstractNode[] lokace;
+	static Sklad[] sklady;
+	static Oaza[] oazy;
+	
 	
 	public static void main(String[] args) {
 		
@@ -40,10 +44,10 @@ public class Hlavni {
 	}
 
 	/**
-	 * Z atributu vstup nacte data a ulozije do jednotlivych poli
+	 * Z atributu vstup nacte data a ulozi je do jednotlivych poli
 	 * 
 	 * @param vstup			vstupni data 
-	 * @throws IOException	
+	 * @throws IOException	pri spatnem formatu vstupniho souboru
 	 */
 	private static void nacti(String vstup) {
 		Scanner sc = null;
@@ -51,20 +55,22 @@ public class Hlavni {
 			sc = new Scanner(vstup);
 			sc.useLocale(Locale.US);
 			
-			Sklad[] sklady = new Sklad[sc.nextInt()];
+			sklady = new Sklad[sc.nextInt()];
 			for(int i = 0; i < sklady.length; i++) {
 				sklady[i] = new Sklad(sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextInt(),sc.nextInt());
 			}
 			
-			Oaza[] oazy = new Oaza[sc.nextInt()];
+			oazy = new Oaza[sc.nextInt()];
 			for(int i = 0; i < oazy.length; i++) {
 				oazy[i] = new Oaza(sc.nextDouble(),sc.nextDouble());
 			}
 			
-			//cesty zatim preskoci a nijak je neuklada 
-			int cesty = sc.nextInt();
-			for(int i = 0; i < cesty; i++) {
-				sc.nextInt();	sc.nextInt();
+			udelejVrcholy();
+			
+			//ukladani cest do pole je pitomost a zatim slouzi jenom k ukladani a kontrole vstupniho parseru
+			Edge[] cesty = new Edge[sc.nextInt()];
+			for(int i = 0; i < cesty.length; i++) {
+				cesty[i] = new Edge(lokace[sc.nextInt()], lokace[sc.nextInt()]);
 			}
 			
 			DruhVelblouda[] DruhyVelblouda = new DruhVelblouda[sc.nextInt()];
@@ -78,12 +84,30 @@ public class Hlavni {
 			for (int i = 0; i < pozadavky.length; i++) {
 				pozadavky[i] = new Pozadavek(sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
 			}
+			
+			
 		} finally {
 			sc.close();
 		}
 		
 	}
 	
+	/**
+	 * Spoji pole skladu a pole velbloudu do jednoho pole reprezentujici vrcholy grafu
+	 * 
+	 * @param sklady
+	 * @param oazy
+	 */
+	private static void udelejVrcholy() {
+		lokace = new AbstractNode[oazy.length + sklady.length];
+		for(int i = 0, j = 0; i < lokace.length; i++, j++) {
+			if(j < sklady.length) {
+				lokace[i] = sklady[j];
+			} else {
+				lokace[i] = oazy[j - sklady.length];
+			}
+		}
+	}
 	
 	
 }
