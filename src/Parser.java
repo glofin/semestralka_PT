@@ -2,52 +2,38 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Locale;
-import java.util.PriorityQueue;
 import java.util.Scanner;
 
-public class Main {
-	
-	/** Vrcholy grafu */
-	static AbstractNode[] locations;
-	/** Vsechny sklady */
-	static Sklad[] sklady;
-	/** Vsechny oazy */
-	static Oaza[] oazy;
-	/** Vsechny pozadavky (i nesplnene) */
-	static Task[] tasks;
-	/** Prioritni fronta nadchazejicich eventu serazena podle toho, kdy maji nastat */
-	static PriorityQueue<Event> events;
-	
+public class Parser {
 	
 	public static void main(String[] args) {
 		
-		events = new PriorityQueue<Event>();
 		try {
-			String input = souborDoStringu("data/centre_small.txt");
+			String input = souborDoStringu("data/parser.txt");
 			nacti(input);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
 		
-		eventManager();
+		EventManager.timeline();
 
 	}
 	
 	/**
 	 * Nacte cely vstupni soubor a ulozi ho do Stringu, ze ktereho pak odstrani komentare
 	 * 
-	 * @param soubor		cely nazev vstupniho souboru
+	 * @param file		cely nazev vstupniho souboru
 	 * @return				vstupni soubor jako String bez komentaru
 	 * @throws IOException	chyba ve vstupnim souboru nebo jeho jmene
 	 */
-	private static String souborDoStringu(String soubor) throws IOException {
-		String s = new String(Files.readAllBytes(Paths.get(soubor)));
+	private static String souborDoStringu(String file) throws IOException {
+		String s = new String(Files.readAllBytes(Paths.get(file)));
 
 		int end;
 		int start = 0;
-		while((end = s.indexOf("đźŹś", start)) > 0) {
-			start = s.lastIndexOf("đź�Ş", end);
+		while((end = s.indexOf("🏜", start)) > 0) {
+			start = s.lastIndexOf("🐪", end);
 			s = (s.substring(0, start)) + " " + (s.substring(end+2));
 		}
 	
@@ -66,18 +52,20 @@ public class Main {
 			sc = new Scanner(vstup);
 			sc.useLocale(Locale.US);
 			
-			sklady = new Sklad[sc.nextInt()];
+			Sklad[] sklady = new Sklad[sc.nextInt()];
 			for(int i = 0; i < sklady.length; i++) {
 				sklady[i] = new Sklad(sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextDouble(),sc.nextDouble());
-				events.add(new Event(sklady[i].loadingTime, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
+				EventManager.events.add(new Event(sklady[i].loadingTime, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
 			}
+			EventManager.sklady = sklady;
 			
-			oazy = new Oaza[sc.nextInt()];
+			Oaza[] oazy = new Oaza[sc.nextInt()];
 			for(int i = 0; i < oazy.length; i++) {
 				oazy[i] = new Oaza(sc.nextDouble(),sc.nextDouble());
 			}
+			EventManager.oazy = oazy;
 			
-			udelejVrcholy();
+			udelejVrcholy(sklady, oazy);
 			
 			//cesty se zatim nijak neukladaji
 			int c = sc.nextInt();
@@ -92,11 +80,12 @@ public class Main {
 			}
 			Velbloud.setDruhy(DruhyVelblouda);
 			
-			tasks =  new Task[sc.nextInt()];
+			Task[] tasks =  new Task[sc.nextInt()];
 			for (int i = 0; i < tasks.length; i++) {
 				tasks[i] = new Task(sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
-				events.add(new Event(tasks[i].arrivalTime, EventType.NewTask, i));	//vytvori pozadavku event typu newTask
+				EventManager.events.add(new Event(tasks[i].arrivalTime, EventType.NewTask, i));	//vytvori pozadavku event typu newTask
 			}
+			EventManager.tasks = tasks;
 			
 		} finally {
 			sc.close();
@@ -110,8 +99,8 @@ public class Main {
 	 * @param sklady
 	 * @param oazy
 	 */
-	private static void udelejVrcholy() {
-		locations = new AbstractNode[oazy.length + sklady.length];
+	private static void udelejVrcholy(Sklad[] sklady, Oaza[] oazy) {
+		AbstractNode[] locations = new AbstractNode[oazy.length + sklady.length];
 		for(int i = 0, j = 0; i < locations.length; i++, j++) {
 			if(j < sklady.length) {
 				locations[i] = sklady[j];
@@ -119,35 +108,7 @@ public class Main {
 				locations[i] = oazy[j - sklady.length];
 			}
 		}
-	}
-	
-	
-	private static void eventManager() {
-		while(true) {
-			Event e = events.poll();
-			switch(e.type) {
-				case StorageRefill:
-					sklady[e.index].makeBaskets();
-					events.add(new Event(e.time + sklady[e.index].loadingTime, EventType.StorageRefill, e.index));
-					break;
-				
-				case NewTask:
-					Task t = tasks[e.index];
-					System.out.printf("Cas: %f, Pozadavek: %d, Oaza: %d, Pocet kosu: %d, Deadline: %f\n", 
-													t.arrivalTime,
-													e.index + 1,
-													t.oaza,
-													t.basketCount,
-													t.deadline);
-					if(e.index == tasks.length - 1)
-						System.exit(0);
-					//TODO zpracovat pozadavek t a vytvorit nove eventy
-					break;
-				
-				default:
-					System.exit(0);						
-			} //konec switch
-		} //konec while
+		EventManager.locations = locations;
 	}
 	
 }

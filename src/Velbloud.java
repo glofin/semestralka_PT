@@ -9,6 +9,8 @@ public class Velbloud implements Comparable<Velbloud> {
  	/** Druh, ke kteremu velbloud nalezi */
  	public final DruhVelblouda druh;
  	
+ 	public final String name;
+ 	
  	/** Rychlost velblouda */
  	public final double speed;
  	
@@ -20,9 +22,14 @@ public class Velbloud implements Comparable<Velbloud> {
  	
  	/** Aktualni vzdalenost, kterou zvladne velbloud ujit pred napitim */
  	public double distance;
+ 	
+ 	/** Aktualni pozadavek, ktery tento velbloud vykonava */
+ 	public Task task = null;
 
  	
  	private Velbloud(double speed, double mDistance, DruhVelblouda druh) {
+ 		druh.count++;
+ 		name = druh.name + "_" + druh.count;
  		this.speed = speed;
  		maxDistance = mDistance;
  		drinkTime = druh.drinkTime;

@@ -3,14 +3,17 @@
  */
 public class DruhVelblouda {
 	
-	String name;
-	double minV;
-	double maxV;
-	double minD;
-	double maxD;
-	double drinkTime;
-	int maxLoad;
-	double chance;
+	final String name;
+	final double minV;
+	final double maxV;
+	final double minD;
+	final double maxD;
+	final double drinkTime;
+	final int maxLoad;
+	final double chance;
+	
+	/** Pocet vygenerovanych velbloudu tohoto druhu */
+	int count;
 	
 	/**
 	 * @param name		jmeno druhu
@@ -33,6 +36,7 @@ public class DruhVelblouda {
 		this.drinkTime = drinkTime;
 		this.maxLoad= maxLoad;
 		this.chance = chance;
+		count = 0;
 		
 	}
 
