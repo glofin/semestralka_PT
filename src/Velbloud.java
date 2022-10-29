@@ -1,7 +1,7 @@
 /**
  * Instance tridy {@code Velbloud} predstavuji jednotlive velbloudy
  */
-public class Velbloud {
+public class Velbloud implements Comparable<Velbloud> {
 	
 	/** Druhy, ktere je mozne generovat */
  	private static DruhVelblouda[] druhy;
@@ -33,13 +33,12 @@ public class Velbloud {
  	public static Velbloud generujVelblouda() {
 
  		DruhVelblouda druh = generujDruh();
-			double rangeRychlost = druh.maxV - druh.minV;
-			double rychlost = druh.maxV - (Math.random() * rangeRychlost);
-			double rangePiti = druh.maxD - druh.minD;
-			double mPiti = druh.maxD - (Math.random() * rangePiti);
-			
-			return new Velbloud(rychlost, mPiti, druh.casPiti);
-
+		double rangeRychlost = druh.maxV - druh.minV;
+		double rychlost = druh.maxV - (Math.random() * rangeRychlost);
+		double rangePiti = druh.maxD - druh.minD;
+		double mPiti = druh.maxD - (Math.random() * rangePiti);
+		
+		return new Velbloud(rychlost, mPiti, druh.casPiti);
  	}
  	
  	/**
@@ -48,9 +47,13 @@ public class Velbloud {
  	 */
  	private static DruhVelblouda generujDruh() {
  		double sance = 0;
+ 		double random = Math.random();
+ 		
  		for(int i = 0; i < druhy.length; i++) {
+ 			
  			sance += druhy[i].pomer;
- 			if(Math.random() <= sance) {
+ 			
+ 			if(random <= sance) {
  				return druhy[i];
  			}
  		}
@@ -63,13 +66,20 @@ public class Velbloud {
  	public void Napij() {
  		ujde = maxUjde;
  	}
- 		
- 	
+ 
 	/**
 	 * @param druhy 	Druhy velbloudu, ktere je mozne generovat
 	 */
 	public static void setDruhy(DruhVelblouda[] pole) {
 		druhy = pole;
+	}
+
+	/**
+	 * Vrati kladne cilso pokud aktualni velbloud ujde vice nez velboud v parametru
+	 */
+	@Override
+	public int compareTo(Velbloud o) {
+		return (int) (o.maxUjde - this.maxUjde);
 	}
 	
 }

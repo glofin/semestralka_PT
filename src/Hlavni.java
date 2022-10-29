@@ -70,7 +70,7 @@ public class Hlavni {
 			//ukladani cest do pole je pitomost a zatim slouzi jenom k ukladani a kontrole vstupniho parseru
 			Edge[] cesty = new Edge[sc.nextInt()];
 			for(int i = 0; i < cesty.length; i++) {
-				cesty[i] = new Edge(lokace[sc.nextInt()], lokace[sc.nextInt()]);
+				cesty[i] = new Edge(lokace[sc.nextInt() - 1], lokace[sc.nextInt() - 1]);
 			}
 			
 			DruhVelblouda[] DruhyVelblouda = new DruhVelblouda[sc.nextInt()];
