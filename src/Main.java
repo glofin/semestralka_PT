@@ -80,9 +80,9 @@ public class Main {
 			}
 			Velbloud.setDruhy(DruhyVelblouda);
 			
-			Pozadavek[] pozadavky =  new Pozadavek[sc.nextInt()];
+			Task[] pozadavky =  new Task[sc.nextInt()];
 			for (int i = 0; i < pozadavky.length; i++) {
-				pozadavky[i] = new Pozadavek(sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
+				pozadavky[i] = new Task(sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
 			}
 			
 			
