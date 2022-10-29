@@ -19,6 +19,8 @@ public class EventManager {
 		
 		events.add(new Event(100000, EventType.End, 0)); //automaticky zastavi program pokud prekroci cas 100 000
 		
+		
+		
 		while(true) {
 			Event e = events.poll();
 			switch(e.type) {
@@ -50,25 +52,27 @@ public class EventManager {
 					camelHome(e);
 					break;
 					
-				default:
+				case End:
 					System.out.println("\nUkoncuji v case 100 000"); //TODO ve finalni verzi odstranit
-					System.exit(0);						
+					
+				default:
+					System.exit(0);					
 			}
 		}
 	}
 
 	private static void camelHome(Event e) {
-		System.out.printf(Locale.US, "Cas: %f, Velbloud: %s, Navrat do skladu: %d",
+		System.out.printf(Locale.US, "Cas: %f, Velbloud: %s, Navrat do skladu: %d\n",
 								e.time,
 								e.velbloud.name,
-								e.index);
+								e.index + 1);
 	}
 
 
 	private static void camelTransit(Event e) {
 		if(e.index >= sklady.length) {
 			e.index -= sklady.length - 1;
-			System.out.printf(Locale.US, "Cas: %f, Velbloud: %s, Oaza: %d, Kuk na velblouda",
+			System.out.printf(Locale.US, "Cas: %f, Velbloud: %s, Oaza: %d, Kuk na velblouda\n",
 								e.time,
 								e.velbloud.name,
 								e.index);
@@ -83,12 +87,13 @@ public class EventManager {
 			s = "Sklad";
 		} else {
 			s = "Oaza";
+			e.index -= sklady.length;
 		}
-		System.out.printf(Locale.US, "Cas: %f, Velbloud: %s, %s: %d, Ziznivy %s, Pokracovani mozne v: %f",
+		System.out.printf(Locale.US, "Cas: %f, Velbloud: %s, %s: %d, Ziznivy %s, Pokracovani mozne v: %f\n",
 								e.time,
 								e.velbloud.name,
 								s,
-								e.index,
+								e.index + 1,
 								e.velbloud.druh.name,
 								e.time + e.velbloud.drinkTime);
 		
@@ -96,13 +101,14 @@ public class EventManager {
 
 
 	private static void camelFinished(Event e) {
-		System.out.printf(Locale.US, "Cas: %f, Velbloud: %s, Oaza: %d, Vylozeno kosu: %d, Vylozeno v: %f, Casova rezerva: %f",
+		double finishedTime = e.time + (e.velbloud.task.basketCount * e.velbloud.home.loadingTime);
+		System.out.printf(Locale.US, "Cas: %f, Velbloud: %s, Oaza: %d, Vylozeno kosu: %d, Vylozeno v: %f, Casova rezerva: %f\n",
 								e.time,
 								e.velbloud.name,
 								e.index,
 								e.velbloud.task.basketCount,
-								e.time + (0), //TODO
-								e.velbloud.task.deadline - e.time);
+								finishedTime,
+								e.velbloud.task.deadline - finishedTime);
 		
 	}
 
@@ -121,11 +127,11 @@ public class EventManager {
 		System.out.printf(Locale.US, "Cas: %f, Pozadavek: %d, Oaza: %d, Pocet kosu: %d, Deadline: %f\n", 
 								t.arrivalTime,
 								e.index + 1,
-								t.oaza,
+								tasks[e.index].oaza,
 								t.basketCount,
 								t.deadline);
-		//TODO zpracovat pozadavek t a vytvorit nove eventy
 		
+		//TODO zpracovat pozadavek
 	}
 
 	private static void reffilStorage(Event e) {

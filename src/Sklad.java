@@ -1,4 +1,4 @@
-import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Instance tridy {@code Sklad} predstavuji jednotlive sklady, ze kterych jsou vysilani velbloudi s nakladem kosu
@@ -16,7 +16,7 @@ public class Sklad extends AbstractNode {
 	/** Pocet kosu pri inicializaci a zaroven pocet nove vytvorenych kosu pri jejich vytvareni */
 	final int newBaskets;
 	
-	SortedSet<Velbloud> set;
+	TreeSet<Velbloud> set;
 	
 	
 	/**
@@ -33,6 +33,7 @@ public class Sklad extends AbstractNode {
 		newBaskets = basketCount;
 		this.basketMakingTime = basketMakingTime;
 		this.loadingTime = loadingTime;
+		set = new TreeSet<Velbloud>();
 	}
 	
 	/**

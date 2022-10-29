@@ -9,7 +9,7 @@ public class Parser {
 	public static void main(String[] args) {
 		
 		try {
-			String input = souborDoStringu("data/parser.txt");
+			String input = souborDoStringu("data/centre_small.txt");
 			nacti(input);
 		} catch (IOException e) {
 			e.printStackTrace();

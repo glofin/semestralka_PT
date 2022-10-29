@@ -9,7 +9,11 @@ public class Velbloud implements Comparable<Velbloud> {
  	/** Druh, ke kteremu velbloud nalezi */
  	public final DruhVelblouda druh;
  	
+ 	/** Jmeno konkretniho velbloda */
  	public final String name;
+ 	
+ 	/** index domovskeho skladu */
+ 	public final Sklad home;
  	
  	/** Rychlost velblouda */
  	public final double speed;
@@ -27,21 +31,23 @@ public class Velbloud implements Comparable<Velbloud> {
  	public Task task = null;
 
  	
- 	private Velbloud(double speed, double mDistance, DruhVelblouda druh) {
+ 	private Velbloud(double spd, double mDistance, DruhVelblouda drh, Sklad skld) {
+ 		druh = drh;
  		druh.count++;
  		name = druh.name + "_" + druh.count;
- 		this.speed = speed;
+ 		speed = spd;
  		maxDistance = mDistance;
  		drinkTime = druh.drinkTime;
  		distance = mDistance;
- 		this.druh = druh;
+ 		home = skld;
  	}
  	
  	/**
- 	 * Nahodne vygeneruje velblouda 
- 	 * @return 	nove vygenerovany velbloud
+ 	 * Nahodne vygeneruje velblouda a prida ho do mnoziny velbloudu, ve skladu na urcenem indexu
+ 	 * @param sklad 	sklad, do ktereho bude velbloud prirazen
+ 	 * @return 			nove vygenerovany velbloud
  	 */
- 	public static Velbloud generujVelblouda() {
+ 	public static Velbloud generujVelblouda(Sklad sklad) {
 
  		DruhVelblouda druh = generujDruh();
 		double rangeSpeed = druh.maxV - druh.minV;
@@ -49,7 +55,9 @@ public class Velbloud implements Comparable<Velbloud> {
 		double rangeDistance = druh.maxD - druh.minD;
 		double mDistance = druh.maxD - (Math.random() * rangeDistance);
 		
-		return new Velbloud(speed, mDistance, druh);
+		Velbloud v = new Velbloud(speed, mDistance, druh, sklad);
+		sklad.set.add(v);
+		return v;
  	}
  	
  	/**
