@@ -6,6 +6,9 @@ public class Velbloud implements Comparable<Velbloud> {
 	/** Druhy, ktere je mozne generovat */
  	private static DruhVelblouda[] druhy;
  	
+ 	/** Druh, ke kteremu velbloud nalezi */
+ 	public final DruhVelblouda druh;
+ 	
  	/** Rychlost velblouda */
  	public final double speed;
  	
@@ -19,11 +22,12 @@ public class Velbloud implements Comparable<Velbloud> {
  	public double distance;
 
  	
- 	private Velbloud(double speed, double mDistance, double drink) {
+ 	private Velbloud(double speed, double mDistance, DruhVelblouda druh) {
  		this.speed = speed;
  		maxDistance = mDistance;
- 		drinkTime = drink;
+ 		drinkTime = druh.drinkTime;
  		distance = mDistance;
+ 		this.druh = druh;
  	}
  	
  	/**
@@ -38,7 +42,7 @@ public class Velbloud implements Comparable<Velbloud> {
 		double rangeDistance = druh.maxD - druh.minD;
 		double mDistance = druh.maxD - (Math.random() * rangeDistance);
 		
-		return new Velbloud(speed, mDistance, druh.drinkTime);
+		return new Velbloud(speed, mDistance, druh);
  	}
  	
  	/**

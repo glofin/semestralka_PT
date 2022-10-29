@@ -8,7 +8,7 @@ public class DruhVelblouda {
 	double maxV;
 	double minD;
 	double maxD;
-	int drinkTime;
+	double drinkTime;
 	int maxLoad;
 	double chance;
 	
@@ -23,7 +23,7 @@ public class DruhVelblouda {
 	 * @param chance	pomer vyskytu ve stadu oproti ostatnim druhum
 	 */
 	public DruhVelblouda(String name, double minV, double maxV,
-				double minD, double maxD, int drinkTime, int maxLoad, double chance) {
+				double minD, double maxD, double drinkTime, int maxLoad, double chance) {
 		
 		this.name= name;
 		this.minV = minV;

@@ -2,17 +2,26 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Locale;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class Main {
 	
-	static AbstractNode[] lokace;
+	/** Vrcholy grafu */
+	static AbstractNode[] locations;
+	/** Vsechny sklady */
 	static Sklad[] sklady;
+	/** Vsechny oazy */
 	static Oaza[] oazy;
+	/** Vsechny pozadavky (i nesplnene) */
+	static Task[] tasks;
+	/** Prioritni fronta nadchazejicich eventu serazena podle toho, kdy maji nastat */
+	static PriorityQueue<Event> events;
 	
 	
 	public static void main(String[] args) {
 		
+		events = new PriorityQueue<Event>();
 		try {
 			String input = souborDoStringu("data/centre_small.txt");
 			nacti(input);
@@ -20,6 +29,8 @@ public class Main {
 			e.printStackTrace();
 			System.exit(0);
 		}
+		
+		eventManager();
 
 	}
 	
@@ -57,7 +68,8 @@ public class Main {
 			
 			sklady = new Sklad[sc.nextInt()];
 			for(int i = 0; i < sklady.length; i++) {
-				sklady[i] = new Sklad(sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextInt(),sc.nextInt());
+				sklady[i] = new Sklad(sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextDouble(),sc.nextDouble());
+				events.add(new Event(sklady[i].BASKET_MAKING_TIME, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
 			}
 			
 			oazy = new Oaza[sc.nextInt()];
@@ -67,24 +79,24 @@ public class Main {
 			
 			udelejVrcholy();
 			
-			//ukladani cest do pole je pitomost a zatim slouzi jenom k ukladani a kontrole vstupniho parseru
-			Edge[] cesty = new Edge[sc.nextInt()];
-			for(int i = 0; i < cesty.length; i++) {
-				cesty[i] = new Edge(lokace[sc.nextInt() - 1], lokace[sc.nextInt() - 1]);
+			//cesty se zatim nijak neukladaji
+			int c = sc.nextInt();
+			for(int i = 0; i < c; i++) {
+				sc.nextInt(); sc.nextInt();
 			}
 			
 			DruhVelblouda[] DruhyVelblouda = new DruhVelblouda[sc.nextInt()];
 			for(int i = 0; i < DruhyVelblouda.length; i++) {
 				DruhyVelblouda[i] = new DruhVelblouda(sc.next(), sc.nextDouble(), sc.nextDouble(),
-						sc.nextDouble(), sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
+						sc.nextDouble(), sc.nextDouble(), sc.nextDouble(), sc.nextInt(), sc.nextDouble());
 			}
 			Velbloud.setDruhy(DruhyVelblouda);
 			
-			Task[] pozadavky =  new Task[sc.nextInt()];
-			for (int i = 0; i < pozadavky.length; i++) {
-				pozadavky[i] = new Task(sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
+			tasks =  new Task[sc.nextInt()];
+			for (int i = 0; i < tasks.length; i++) {
+				tasks[i] = new Task(sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
+				events.add(new Event(tasks[i].arrivalTime, EventType.NewTask, i));	//vytvori pozadavku event typu newTask
 			}
-			
 			
 		} finally {
 			sc.close();
@@ -99,15 +111,43 @@ public class Main {
 	 * @param oazy
 	 */
 	private static void udelejVrcholy() {
-		lokace = new AbstractNode[oazy.length + sklady.length];
-		for(int i = 0, j = 0; i < lokace.length; i++, j++) {
+		locations = new AbstractNode[oazy.length + sklady.length];
+		for(int i = 0, j = 0; i < locations.length; i++, j++) {
 			if(j < sklady.length) {
-				lokace[i] = sklady[j];
+				locations[i] = sklady[j];
 			} else {
-				lokace[i] = oazy[j - sklady.length];
+				locations[i] = oazy[j - sklady.length];
 			}
 		}
 	}
 	
+	
+	private static void eventManager() {
+		while(true) {
+			Event e = events.poll();
+			switch(e.type) {
+				case StorageRefill:
+					sklady[e.index].makeBaskets();
+					events.add(new Event(e.time + sklady[e.index].LOADING_TIME, EventType.StorageRefill, e.index));
+					break;
+				
+				case NewTask:
+					Task t = tasks[e.index];
+					System.out.printf("Cas: %f, Pozadavek: %d, Oaza: %d, Pocet kosu: %d, Deadline: %f\n", 
+													t.arrivalTime,
+													e.index + 1,
+													t.oaza,
+													t.basketCount,
+													t.deadline);
+					if(e.index == tasks.length - 1)
+						System.exit(0);
+					//TODO zpracovat pozadavek t a vytvorit nove eventy
+					break;
+				
+				default:
+					System.exit(0);						
+			} //konec switch
+		} //konec while
+	}
 	
 }

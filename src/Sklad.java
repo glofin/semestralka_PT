@@ -5,35 +5,41 @@ import java.util.SortedSet;
  */
 public class Sklad extends AbstractNode {
 
-	int pocetKosu;
-	int casDoplneni;
-	int casNalozeni;
+	/** Aktualni pocet kosu ve skladu */
+	int basketCount;
+	
+	/** doba, za kterou se ve skladu vytvori nove kose */
+	final double BASKET_MAKING_TIME;
+	/** doba potrebna pro nalozeni kosu na velblouda */
+	final double LOADING_TIME;
 	
 	/** Pocet kosu pri inicializaci a zaroven pocet nove vytvorenych kosu pri jejich vytvareni */
-	private final int pocetKosuDefault;
-	
-	
+	final int NEWBASKETS;
 	
 	SortedSet<Velbloud> set;
 	
 	
-	
-	
-	
-	public Sklad(double x, double y, int pocetKosu, int casDoplneni, int casNalozeni) {
+	/**
+	 * @param x					x-ova souradnice skladu
+	 * @param y					y-ova souradnice skladu
+	 * @param basketCount		aktualni pocet kosu ve skladu
+	 * @param basketMakingTime	doba, za kterou se ve skladu vytvori nove kose
+	 * @param loadingTime
+	 */
+	public Sklad(double x, double y, int basketCount, double basketMakingTime, double loadingTime) {
 		this.x = x;
 		this.y = y;
-		this.pocetKosu = pocetKosu;
-		this.pocetKosuDefault = pocetKosu;
-		this.casDoplneni = casDoplneni;
-		this.casNalozeni = casNalozeni;
+		this.basketCount = basketCount;
+		NEWBASKETS = basketCount;
+		BASKET_MAKING_TIME = basketMakingTime;
+		LOADING_TIME = loadingTime;
 	}
 	
 	/**
 	 * Vytvori ve skladu nove kose
 	 */
-	public void vytvorKose() {
-		pocetKosu += pocetKosuDefault;
+	public void makeBaskets() {
+		basketCount += NEWBASKETS;
 	}
 	
 	
