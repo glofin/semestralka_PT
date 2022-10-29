@@ -7,23 +7,23 @@ public class Velbloud implements Comparable<Velbloud> {
  	private static DruhVelblouda[] druhy;
  	
  	/** Rychlost velblouda */
- 	public final double rychlost;
+ 	public final double speed;
  	
  	/** Maximalni vzdalenost, kterou velbloud ujde po napiti */
- 	private final double maxUjde;
+ 	private final double maxDistance;
  	
  	/** Doba, za kterou se velbloud napije */
- 	public final double casPiti;
+ 	public final double drinkTime;
  	
  	/** Aktualni vzdalenost, kterou zvladne velbloud ujit pred napitim */
- 	public double ujde;
+ 	public double distance;
 
  	
- 	private Velbloud(double rych, double mUjde, double cPiti) {
- 		rychlost = rych;
- 		maxUjde = mUjde;
- 		casPiti = cPiti;
- 		ujde = mUjde;
+ 	private Velbloud(double speed, double mDistance, double drink) {
+ 		this.speed = speed;
+ 		maxDistance = mDistance;
+ 		drinkTime = drink;
+ 		distance = mDistance;
  	}
  	
  	/**
@@ -33,12 +33,12 @@ public class Velbloud implements Comparable<Velbloud> {
  	public static Velbloud generujVelblouda() {
 
  		DruhVelblouda druh = generujDruh();
-		double rangeRychlost = druh.maxV - druh.minV;
-		double rychlost = druh.maxV - (Math.random() * rangeRychlost);
-		double rangePiti = druh.maxD - druh.minD;
-		double mPiti = druh.maxD - (Math.random() * rangePiti);
+		double rangeSpeed = druh.maxV - druh.minV;
+		double speed = druh.maxV - (Math.random() * rangeSpeed);
+		double rangeDistance = druh.maxD - druh.minD;
+		double mDistance = druh.maxD - (Math.random() * rangeDistance);
 		
-		return new Velbloud(rychlost, mPiti, druh.casPiti);
+		return new Velbloud(speed, mDistance, druh.drinkTime);
  	}
  	
  	/**
@@ -51,7 +51,7 @@ public class Velbloud implements Comparable<Velbloud> {
  		
  		for(int i = 0; i < druhy.length; i++) {
  			
- 			sance += druhy[i].pomer;
+ 			sance += druhy[i].chance;
  			
  			if(random <= sance) {
  				return druhy[i];
@@ -63,8 +63,8 @@ public class Velbloud implements Comparable<Velbloud> {
 	/**
  	 *  Velbloud se napije a doplni si zasobu vody
  	 */
- 	public void Napij() {
- 		ujde = maxUjde;
+ 	public void Drink() {
+ 		distance = maxDistance;
  	}
  
 	/**
@@ -79,7 +79,7 @@ public class Velbloud implements Comparable<Velbloud> {
 	 */
 	@Override
 	public int compareTo(Velbloud o) {
-		return (int) (o.maxUjde - this.maxUjde);
+		return (int) (o.maxDistance - this.maxDistance);
 	}
 	
 }

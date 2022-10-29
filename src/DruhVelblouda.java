@@ -3,38 +3,36 @@
  */
 public class DruhVelblouda {
 	
-	String jmeno;
+	String name;
 	double minV;
 	double maxV;
 	double minD;
 	double maxD;
-	int casPiti;
+	int drinkTime;
 	int maxLoad;
-	double pomer;
+	double chance;
 	
 	/**
-	 * Vytvori novy druh velblouda
-	 * 
-	 * @param jmeno		jmeno
+	 * @param name		jmeno druhu
 	 * @param minV		minimalni generovatelna rychlost
 	 * @param maxV		maximalni generovatelna rychlost
 	 * @param minD		minimalni generovatelna vzdalenost po napiti
 	 * @param maxD		maximalni generovatelna rychlost
-	 * @param casPiti	cas piti
-	 * @param maxLoad	maximalni zatez
-	 * @param pomer		pomer vyskytu ve stadu oproti ostatnim druhum
+	 * @param drinkTime	cas piti
+	 * @param maxLoad	maximalni pocet kosu, co tento druh unese
+	 * @param chance	pomer vyskytu ve stadu oproti ostatnim druhum
 	 */
-	public DruhVelblouda(String jmeno, double minV, double maxV,
-				double minD, double maxD, int casPiti, int maxLoad, double pomer) {
+	public DruhVelblouda(String name, double minV, double maxV,
+				double minD, double maxD, int drinkTime, int maxLoad, double chance) {
 		
-		this.jmeno= jmeno;
+		this.name= name;
 		this.minV = minV;
 		this.maxV = maxV;
 		this.minD = minD;
 		this.maxD = maxD;
-		this.casPiti = casPiti;
+		this.drinkTime = drinkTime;
 		this.maxLoad= maxLoad;
-		this.pomer = pomer;
+		this.chance = chance;
 		
 	}
 

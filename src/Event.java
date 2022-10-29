@@ -5,7 +5,7 @@ public class Event {
 		
 	}
 	
-	int cas;
+	int time;
 	Type typ;
 	
 	
