@@ -9,12 +9,12 @@ public class Sklad extends AbstractNode {
 	int basketCount;
 	
 	/** doba, za kterou se ve skladu vytvori nove kose */
-	final double BASKET_MAKING_TIME;
+	final double basketMakingTime;
 	/** doba potrebna pro nalozeni kosu na velblouda */
-	final double LOADING_TIME;
+	final double loadingTime;
 	
 	/** Pocet kosu pri inicializaci a zaroven pocet nove vytvorenych kosu pri jejich vytvareni */
-	final int NEWBASKETS;
+	final int newBaskets;
 	
 	SortedSet<Velbloud> set;
 	
@@ -30,16 +30,16 @@ public class Sklad extends AbstractNode {
 		this.x = x;
 		this.y = y;
 		this.basketCount = basketCount;
-		NEWBASKETS = basketCount;
-		BASKET_MAKING_TIME = basketMakingTime;
-		LOADING_TIME = loadingTime;
+		newBaskets = basketCount;
+		this.basketMakingTime = basketMakingTime;
+		this.loadingTime = loadingTime;
 	}
 	
 	/**
 	 * Vytvori ve skladu nove kose
 	 */
 	public void makeBaskets() {
-		basketCount += NEWBASKETS;
+		basketCount += newBaskets;
 	}
 	
 	

@@ -69,7 +69,7 @@ public class Main {
 			sklady = new Sklad[sc.nextInt()];
 			for(int i = 0; i < sklady.length; i++) {
 				sklady[i] = new Sklad(sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextDouble(),sc.nextDouble());
-				events.add(new Event(sklady[i].BASKET_MAKING_TIME, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
+				events.add(new Event(sklady[i].loadingTime, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
 			}
 			
 			oazy = new Oaza[sc.nextInt()];
@@ -128,7 +128,7 @@ public class Main {
 			switch(e.type) {
 				case StorageRefill:
 					sklady[e.index].makeBaskets();
-					events.add(new Event(e.time + sklady[e.index].LOADING_TIME, EventType.StorageRefill, e.index));
+					events.add(new Event(e.time + sklady[e.index].loadingTime, EventType.StorageRefill, e.index));
 					break;
 				
 				case NewTask:
