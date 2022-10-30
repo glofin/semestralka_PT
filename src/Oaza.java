@@ -9,8 +9,28 @@ public class Oaza extends AbstractNode {
 	 * @param x		souradnice x
 	 * @param y		souradnice y
 	 */
-	public Oaza(double x, double y) {
+	public Oaza(int id, double x, double y) {
+		this.id = id;
 		this.x = x;
 		this.y = y;
+	}
+
+	@Override
+	public String toString() {
+		return "Oasis{" +
+				"id=" + id +
+				", x=" + x +
+				", y=" + y +
+				'}';
+	}
+
+	/**
+	 * pro serazeni adjNodes v Graph podle id
+	 * @param o the object to be compared.
+	 * @return
+	 */
+	@Override
+	public int compareTo(AbstractNode o) {
+		return this.id - o.id;
 	}
 }

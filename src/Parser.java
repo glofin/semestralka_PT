@@ -5,12 +5,15 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class Parser {
-	
+
+	/** graf reprezentujici mapu */
+	private static Graph graph = Graph.getInstance();
 	public static void main(String[] args) {
 		
 		try {
 			String input = souborDoStringu("data/centre_small.txt");
 			nacti(input);
+			System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -51,26 +54,36 @@ public class Parser {
 		try {
 			sc = new Scanner(vstup);
 			sc.useLocale(Locale.US);
+
+			int nodesId = 0;//id vrcholu pro pridani id do instanci Sklad, Oaza
 			
 			Sklad[] sklady = new Sklad[sc.nextInt()];
 			for(int i = 0; i < sklady.length; i++) {
-				sklady[i] = new Sklad(sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextDouble(),sc.nextDouble());
+				Sklad stock = new Sklad(nodesId++, sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextDouble(),sc.nextDouble());
+				sklady[i] = stock;
+				graph.addNode(stock);//pridani vrcholu do grafu
 				EventManager.events.add(new Event(sklady[i].loadingTime, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
 			}
 			EventManager.sklady = sklady;
 			
 			Oaza[] oazy = new Oaza[sc.nextInt()];
 			for(int i = 0; i < oazy.length; i++) {
-				oazy[i] = new Oaza(sc.nextDouble(),sc.nextDouble());
+				Oaza oasis = new Oaza(nodesId++, sc.nextDouble(),sc.nextDouble());
+				oazy[i] = oasis;
+				graph.addNode(oasis);//pridani vrcholu do grafu
 			}
 			EventManager.oazy = oazy;
 			
 			udelejVrcholy(sklady, oazy);
 			
-			//cesty se zatim nijak neukladaji
-			int c = sc.nextInt();
+			//Cesty
+			/*int c = sc.nextInt();
 			for(int i = 0; i < c; i++) {
 				sc.nextInt(); sc.nextInt();
+			}*/
+			int edgesCount = sc.nextInt();
+			for(int i = 0; i < edgesCount; i++) {
+				graph.addEdge(graph.getNodebyId(sc.nextInt() - 1), graph.getNodebyId(sc.nextInt() - 1));//TODO zmenit getNodebyId
 			}
 			
 			DruhVelblouda[] DruhyVelblouda = new DruhVelblouda[sc.nextInt()];

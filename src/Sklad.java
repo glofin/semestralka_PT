@@ -26,7 +26,8 @@ public class Sklad extends AbstractNode {
 	 * @param basketMakingTime	doba, za kterou se ve skladu vytvori nove kose
 	 * @param loadingTime
 	 */
-	public Sklad(double x, double y, int basketCount, double basketMakingTime, double loadingTime) {
+	public Sklad(int id, double x, double y, int basketCount, double basketMakingTime, double loadingTime) {
+		this.id = id;
 		this.x = x;
 		this.y = y;
 		this.basketCount = basketCount;
@@ -41,6 +42,25 @@ public class Sklad extends AbstractNode {
 	 */
 	public void makeBaskets() {
 		basketCount += newBaskets;
+	}
+
+	@Override
+	public String toString() {
+		return "Stock{" +
+				"id=" + id +
+				", x=" + x +
+				", y=" + y +
+				'}';
+	}
+
+	/**
+	 * pro serazeni adjNodes v Graph podle id
+	 * @param o the object to be compared.
+	 * @return
+	 */
+	@Override
+	public int compareTo(AbstractNode o) {
+		return this.id - o.id;
 	}
 	
 	
