@@ -19,6 +19,7 @@ public class Event implements Comparable<Event> {
 		this.index = index;
 		this.velbloud = velbloud;
 	}
+	
 	public Event(double time, EventType type, int index) {
 		this.time = time;
 		this.type = type;

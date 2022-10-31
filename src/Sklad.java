@@ -1,3 +1,4 @@
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
@@ -16,7 +17,8 @@ public class Sklad extends AbstractNode {
 	/** Pocet kosu pri inicializaci a zaroven pocet nove vytvorenych kosu pri jejich vytvareni */
 	final int newBaskets;
 	
-	TreeSet<Velbloud> set;
+	/** Mnozina vsech velbloudu, kteri jsou aktualne ve skladu */
+	SortedSet<Velbloud> set;
 	
 	
 	/**

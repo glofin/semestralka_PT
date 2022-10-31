@@ -2,12 +2,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Locale;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class Parser {
 
 	/** graf reprezentujici mapu */
 	public static Graph graph = Graph.getInstance();
+	
+	private static EventManager manager;
+	
 	public static void main(String[] args) {
 		
 		try {
@@ -18,9 +22,9 @@ public class Parser {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		
-		EventManager.timeline();
-
+		while(true) {
+			manager.nextEvent();
+		}
 	}
 	
 	/**
@@ -57,13 +61,14 @@ public class Parser {
 
 			int nodesId = 0;//id vrcholu pro pridani id do instanci Sklad, Oaza
 			
+			PriorityQueue<Event> events = new PriorityQueue<Event>();
+			
 			int sklady = sc.nextInt();
 			for(int i = 0; i < sklady; i++) {
 				Sklad stock = new Sklad(nodesId++, sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextDouble(),sc.nextDouble());
 				graph.addNode(stock);//pridani vrcholu do grafu
-				EventManager.events.add(new Event(stock.loadingTime, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
+				events.add(new Event(stock.loadingTime, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
 			}
-			EventManager.count = sklady;
 			
 			int oazy = sc.nextInt();
 			for(int i = 0; i < oazy; i++) {
@@ -71,11 +76,6 @@ public class Parser {
 				graph.addNode(oasis);//pridani vrcholu do grafu
 			}
 			
-			//Cesty
-			/*int c = sc.nextInt();
-			for(int i = 0; i < c; i++) {
-				sc.nextInt(); sc.nextInt();
-			}*/
 			int edgesCount = sc.nextInt();
 			for(int i = 0; i < edgesCount; i++) {
 				graph.addEdge(graph.getNodebyId(sc.nextInt() - 1), graph.getNodebyId(sc.nextInt() - 1));//TODO zmenit getNodebyId
@@ -91,9 +91,10 @@ public class Parser {
 			Task[] tasks =  new Task[sc.nextInt()];
 			for (int i = 0; i < tasks.length; i++) {
 				tasks[i] = new Task(sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
-				EventManager.events.add(new Event(tasks[i].arrivalTime, EventType.NewTask, i));	//vytvori pozadavku event typu newTask
+				events.add(new Event(tasks[i].arrivalTime, EventType.NewTask, i));	//vytvori event typu newTask
 			}
-			EventManager.tasks = tasks;
+			
+			manager = new EventManager(events, tasks, sklady);
 			
 		} finally {
 			sc.close();
