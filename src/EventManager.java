@@ -3,17 +3,12 @@ import java.util.PriorityQueue;
 
 public class EventManager {
 	
-	/** Vrcholy grafu */
-	static AbstractNode[] locations;
-	/** Vsechny sklady */
-	static Sklad[] sklady;
-	/** Vsechny oazy */
-	static Oaza[] oazy;
+	/** Pocet skladu */
+	static int count;
 	/** Vsechny pozadavky (i nesplnene) */
 	static Task[] tasks;
 	/** Prioritni fronta nadchazejicich eventu serazena podle toho, kdy maji nastat */
 	static PriorityQueue<Event> events = new PriorityQueue<Event>();
-	
 	
 	public static void timeline() {
 		
@@ -70,12 +65,11 @@ public class EventManager {
 
 
 	private static void camelTransit(Event e) {
-		if(e.index >= sklady.length) {
-			e.index -= sklady.length - 1;
+		if(e.index >= count) {
 			System.out.printf(Locale.US, "Cas: %f, Velbloud: %s, Oaza: %d, Kuk na velblouda\n",
 								e.time,
 								e.velbloud.name,
-								e.index);
+								e.index - count - 1);
 		}
 
 	}
@@ -83,11 +77,11 @@ public class EventManager {
 
 	private static void cameldrinks(Event e) {
 		String s;
-		if(e.index < sklady.length) {
+		if(e.index < count) {
 			s = "Sklad";
 		} else {
 			s = "Oaza";
-			e.index -= sklady.length;
+			e.index -= count;
 		}
 		System.out.printf(Locale.US, "Cas: %f, Velbloud: %s, %s: %d, Ziznivy %s, Pokracovani mozne v: %f\n",
 								e.time,
@@ -119,7 +113,7 @@ public class EventManager {
 								e.velbloud.name,
 								e.index,
 								e.velbloud.task.basketCount,
-								e.time + (sklady[e.index].loadingTime * e.velbloud.task.basketCount));
+								e.time + (((Sklad) Parser.graph.getNodebyId(e.index)).loadingTime * e.velbloud.task.basketCount));
 	}
 
 	private static void doTask(Event e) {
@@ -135,8 +129,9 @@ public class EventManager {
 	}
 
 	private static void reffilStorage(Event e) {
-		sklady[e.index].makeBaskets();
-		events.add(new Event(e.time + sklady[e.index].loadingTime, EventType.StorageRefill, e.index));
+		Sklad refill = ((Sklad) Parser.graph.getNodebyId(e.index));
+		refill.makeBaskets();
+		events.add(new Event(e.time + refill.loadingTime, EventType.StorageRefill, e.index));
 	}
 	
 	

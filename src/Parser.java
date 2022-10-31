@@ -7,12 +7,12 @@ import java.util.Scanner;
 public class Parser {
 
 	/** graf reprezentujici mapu */
-	private static Graph graph = Graph.getInstance();
+	public static Graph graph = Graph.getInstance();
 	public static void main(String[] args) {
 		
 		try {
-			String input = souborDoStringu("data/centre_small.txt");
-			nacti(input);
+			String input = fileToString("data/centre_small.txt");
+			setUp(input);
 			System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -30,7 +30,7 @@ public class Parser {
 	 * @return				vstupni soubor jako String bez komentaru
 	 * @throws IOException	chyba ve vstupnim souboru nebo jeho jmene
 	 */
-	private static String souborDoStringu(String file) throws IOException {
+	private static String fileToString(String file) throws IOException {
 		String s = new String(Files.readAllBytes(Paths.get(file)));
 
 		int end;
@@ -49,7 +49,7 @@ public class Parser {
 	 * @param vstup			vstupni data 
 	 * @throws IOException	pri spatnem formatu vstupniho souboru
 	 */
-	private static void nacti(String vstup) {
+	private static void setUp(String vstup) {
 		Scanner sc = null;
 		try {
 			sc = new Scanner(vstup);
@@ -57,24 +57,19 @@ public class Parser {
 
 			int nodesId = 0;//id vrcholu pro pridani id do instanci Sklad, Oaza
 			
-			Sklad[] sklady = new Sklad[sc.nextInt()];
-			for(int i = 0; i < sklady.length; i++) {
+			int sklady = sc.nextInt();
+			for(int i = 0; i < sklady; i++) {
 				Sklad stock = new Sklad(nodesId++, sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextDouble(),sc.nextDouble());
-				sklady[i] = stock;
 				graph.addNode(stock);//pridani vrcholu do grafu
-				EventManager.events.add(new Event(sklady[i].loadingTime, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
+				EventManager.events.add(new Event(stock.loadingTime, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
 			}
-			EventManager.sklady = sklady;
+			EventManager.count = sklady;
 			
-			Oaza[] oazy = new Oaza[sc.nextInt()];
-			for(int i = 0; i < oazy.length; i++) {
+			int oazy = sc.nextInt();
+			for(int i = 0; i < oazy; i++) {
 				Oaza oasis = new Oaza(nodesId++, sc.nextDouble(),sc.nextDouble());
-				oazy[i] = oasis;
 				graph.addNode(oasis);//pridani vrcholu do grafu
 			}
-			EventManager.oazy = oazy;
-			
-			udelejVrcholy(sklady, oazy);
 			
 			//Cesty
 			/*int c = sc.nextInt();
@@ -106,12 +101,14 @@ public class Parser {
 		
 	}
 	
+	
 	/**
 	 * Spoji pole skladu a pole velbloudu do jednoho pole reprezentujici vrcholy grafu
 	 * 
 	 * @param sklady
 	 * @param oazy
 	 */
+	/**
 	private static void udelejVrcholy(Sklad[] sklady, Oaza[] oazy) {
 		AbstractNode[] locations = new AbstractNode[oazy.length + sklady.length];
 		for(int i = 0, j = 0; i < locations.length; i++, j++) {
@@ -123,5 +120,5 @@ public class Parser {
 		}
 		EventManager.locations = locations;
 	}
-	
+	*/
 }

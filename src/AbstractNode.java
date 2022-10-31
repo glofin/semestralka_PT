@@ -1,6 +1,5 @@
-
 /**
- *  Vrcholy grafu (zatim existuje jen pro ukladani vstupnich dat)
+ *  Vrcholy grafu
  */
 public abstract class AbstractNode implements Comparable<AbstractNode> {
 
