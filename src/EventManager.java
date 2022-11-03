@@ -12,14 +12,14 @@ public class EventManager {//TODO PRIORITA ERROR stav
 	/** Vsechny pozadavky (i nesplnene) */
 	final Task[] tasks;
 	/** Prioritni fronta nadchazejicich eventu serazena podle toho, kdy maji nastat */
-	final List<Event> events;
+	final PriorityQueue<Event> events;
 
 	/** graf reprezentujici mapu */
 	public static Graph graph = Graph.getInstance();
 
 	int numberOftravelingCamels = -1;
 	
-	public EventManager(List<Event> events, Task[] tasks, int count) {
+	public EventManager(PriorityQueue<Event> events, Task[] tasks, int count) {
 		this.events = events;
 		this.tasks = tasks;
 		this.count = count;
@@ -29,9 +29,8 @@ public class EventManager {//TODO PRIORITA ERROR stav
 		
 		//events.add(new Event(100000, EventType.End, 0)); //automaticky zastavi program pokud prekroci cas 100 000
 		if (events.size()<1) System.exit(1);
-		Event e = events.get(0);
+		Event e = events.poll();
 		//System.out.println(events.toString());
-		events.remove(0);
 
 		switch(Objects.requireNonNull(e).type) {
 			case StorageRefill:
@@ -316,9 +315,6 @@ public class EventManager {//TODO PRIORITA ERROR stav
 		assert (time - startTime) != travellingTime;//cas cestovani tam 'time - startime' protoze velbloud jde zpatky
 		time += travellingTime + basketManipTime;
 		events.add(new Event(time, EventType.CamelHome, idStock, velbloud));
-
-		//SORT EVENTSLIST
-		events.sort((o1, o2) -> (int) (o1.time - o2.time));
 
 	}
 

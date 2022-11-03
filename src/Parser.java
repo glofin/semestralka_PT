@@ -13,7 +13,7 @@ public class Parser {
 	public static void main(String[] args) throws Exception {
 		
 		try {
-			String input = fileToString("data/centre_small.txt");
+			String input = fileToString("data/tutorial.txt");
 			setUp(input);
 			//System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {
@@ -59,7 +59,7 @@ public class Parser {
 
 			int nodesId = 0;//id vrcholu pro pridani id do instanci Sklad, Oaza
 			
-			List<Event> events = new ArrayList<>();
+			PriorityQueue<Event> events = new PriorityQueue<Event>();
 			
 			int sklady = sc.nextInt();
 			for(int i = 0; i < sklady; i++) {
