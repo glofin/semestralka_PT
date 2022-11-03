@@ -13,7 +13,7 @@ public class Parser {
 	public static void main(String[] args) throws Exception {
 		
 		try {
-			String input = fileToString("data/tutorial.txt");
+			String input = fileToString("data/centre_small.txt");
 			setUp(input);
 			//System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {

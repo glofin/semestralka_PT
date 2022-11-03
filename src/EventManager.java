@@ -172,7 +172,7 @@ public class EventManager {//TODO PRIORITA ERROR stav
 
 		// KONTROLA nejdelsi hrana na ceste jestli zvladne max druh velblouda
 		//TODO predelat do pripravy grafu(pri vytvatvareni grafu vyhodit hrany, ktere velbloud nezvladne)
-		List<MyPath> pathstoOasis = graph.getPathtoOasisList(t.oaza);
+		List<MyPath> pathstoOasis = graph.getPathtoOasisList(t.oaza + count - 1);
 
 		int idPathtoOasis;//id cesty v seznamu pathstoOasis ktera je mozna s max druhem (nejrychlejsi cesta pri generovani)
 		double maxDistanceOnPath = Double.MAX_VALUE;
