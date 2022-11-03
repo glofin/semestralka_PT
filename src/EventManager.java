@@ -191,7 +191,7 @@ public class EventManager {//TODO PRIORITA ERROR stav
 		double distance = currentPath.getFullDistance();
 		double maxTimeforTask = t.deadline - t.arrivalTime;
 		double idealCamelTime = Velbloud.getDruhMaxSpeed() / distance;
-		if (idealCamelTime > maxTimeforTask)
+		if (distance != 0 && idealCamelTime > maxTimeforTask)
 			events.add(new Event(t.arrivalTime, EventType.ErrorTask, t.oaza));
 			//throw  new Exception("Neexistuje druh velblouda, který zvládne tuto cestu ve stanovenem case");
 			//misto exception errorEvent

@@ -101,24 +101,4 @@ public class Parser {
 		
 	}
 	
-	
-	/**
-	 * Spoji pole skladu a pole velbloudu do jednoho pole reprezentujici vrcholy grafu
-	 * 
-	 * @param sklady
-	 * @param oazy
-	 */
-	/**
-	private static void udelejVrcholy(Sklad[] sklady, Oaza[] oazy) {
-		AbstractNode[] locations = new AbstractNode[oazy.length + sklady.length];
-		for(int i = 0, j = 0; i < locations.length; i++, j++) {
-			if(j < sklady.length) {
-				locations[i] = sklady[j];
-			} else {
-				locations[i] = oazy[j - sklady.length];
-			}
-		}
-		EventManager.locations = locations;
-	}
-	*/
 }
