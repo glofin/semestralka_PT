@@ -36,9 +36,11 @@ public class Velbloud implements Comparable<Velbloud> {
 
 
  	private Velbloud(double spd, double mDistance, DruhVelblouda drh, Sklad skld) {
+
  		druh = drh;
  		druh.count++;
  		name = druh.name + "_" + druh.count;
+		//System.out.println("Novy velbloud " + name);
  		speed = spd;
  		maxDistance = mDistance;
  		drinkTime = druh.drinkTime;

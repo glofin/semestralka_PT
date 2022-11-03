@@ -144,8 +144,8 @@ public class Graph {
 
         while (workingNodes.size() != 0){
             AbstractNode currentNode = findMinDistanceNode(workingNodes);
-            System.out.println("workingNodes " + workingNodes);
-            System.out.println("findMinDistanceNode " + findMinDistanceNode(workingNodes));
+            //System.out.println("workingNodes " + workingNodes);
+            //System.out.println("findMinDistanceNode " + findMinDistanceNode(workingNodes));
             List<Edge> currentNeighbours = adjNodes.get(currentNode);
             for (Edge edge :
                     currentNeighbours) {
@@ -155,7 +155,7 @@ public class Graph {
                     if ((currentNode.getDistance() + edge.getWeight()) < endNode.getDistance()){
                         endNode.setDistance(currentNode.getDistance() + edge.getWeight());
                         endNode.putInShortestPaths(source, currentNode);
-                        System.out.println("id = " + endNode.getId() +"distance" + endNode.distance+ " shortPath: " + endNode.getShortestPaths());
+                        //System.out.println("id = " + endNode.getId() +"distance" + endNode.distance+ " shortPath: " + endNode.getShortestPaths());
                     }
                     workingNodes.add(endNode);
                 }

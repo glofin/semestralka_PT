@@ -137,7 +137,7 @@ public class EventManager {//TODO PRIORITA ERROR stav
 				Math.round(e.time + basketsManipulationTime(e.velbloud))
 							);
 		//TODO odstranit kose ze skladu, odecist camel ze skladu
-		e.velbloud.home.removeCamelFromSet(e.velbloud);
+
 		//e.velbloud.home.removeBaskets(e.velbloud.task.basketCount);
 	}
 
@@ -146,7 +146,7 @@ public class EventManager {//TODO PRIORITA ERROR stav
 	}
 
 	private void reffilStorage(Event e) {
-		System.out.println("reffill");
+		//System.out.println("reffill");
 		Sklad refill = ((Sklad) Parser.graph.getNodebyId(e.index));
 		refill.makeBaskets();
 		if (numberOftravelingCamels != 0) events.add(new Event(e.time + refill.basketMakingTime, EventType.StorageRefill, e.index));
@@ -166,7 +166,7 @@ public class EventManager {//TODO PRIORITA ERROR stav
 		System.out.printf(Locale.US, "Cas: %d, Pozadavek: %d, Oaza: %d, Pocet kosu: %d, Deadline: %d\n",
 								Math.round(t.arrivalTime),
 								e.index + 1,
-								tasks[e.index].oaza,
+								tasks[e.index].oaza + 1,
 								t.basketCount,
 								Math.round(t.deadline));
 
@@ -234,6 +234,7 @@ public class EventManager {//TODO PRIORITA ERROR stav
 			} while (velbloudMaxDistance < maxDistanceOnPath);
 		}
 		selectedVelbloud.setTask(t);
+		selectedVelbloud.home.removeCamelFromSet(selectedVelbloud);
 		planEventsforTask(t.arrivalTime, currentPath, selectedVelbloud, t.basketCount);
 
 	}
