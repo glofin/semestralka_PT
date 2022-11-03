@@ -1,3 +1,8 @@
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
  *  Vrcholy grafu
  */
@@ -11,6 +16,12 @@ public abstract class AbstractNode implements Comparable<AbstractNode> {
 	/** Souradnice y */
 	protected double y;
 
+	/** distance pro dijkstra na hledani nejkratsi cesty*/
+	protected double distance = Double.MAX_VALUE;
+
+	/** zaznam z dajkstry pocitajici do 1.Node je nejkratsi cesta pres 2.Node*/
+	Map<AbstractNode, AbstractNode> shortestPaths = new HashMap<>();
+
 	public double getX() {
 		return x;
 	}
@@ -21,6 +32,22 @@ public abstract class AbstractNode implements Comparable<AbstractNode> {
 
 	public int getId() {
 		return id;
+	}
+
+	public double getDistance() {
+		return distance;
+	}
+
+	public void putInShortestPaths(AbstractNode sourceNode, AbstractNode nextNode){
+		shortestPaths.put(sourceNode, nextNode);
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+
+	public Map<AbstractNode, AbstractNode> getShortestPaths() {
+		return shortestPaths;
 	}
 
 	//TODO: hashCode a equals pro Node

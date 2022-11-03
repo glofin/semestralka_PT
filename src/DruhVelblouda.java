@@ -40,4 +40,11 @@ public class DruhVelblouda {
 		
 	}
 
+	public double getMaxDistance() {
+		return maxD;
+	}
+
+	public double getMaxSpeed() {
+		return maxV;
+	}
 }

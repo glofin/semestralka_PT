@@ -37,6 +37,14 @@ public class Event implements Comparable<Event> {
 		//TODO priorita pokud jsou ve stejnem case
 		return 0;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Event{" +
+				"time=" + time +
+				", type=" + type +
+				", index=" + index +
+				", velbloud=" + velbloud +
+				'}';
+	}
 }

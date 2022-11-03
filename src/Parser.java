@@ -1,9 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Locale;
-import java.util.PriorityQueue;
-import java.util.Scanner;
+import java.util.*;
 
 public class Parser {
 
@@ -12,12 +10,12 @@ public class Parser {
 	
 	private static EventManager manager;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
 		try {
-			String input = fileToString("data/centre_small.txt");
+			String input = fileToString("data/tutorial.txt");
 			setUp(input);
-			System.out.println(graph.toString());//vypis grafu
+			//System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -61,11 +59,12 @@ public class Parser {
 
 			int nodesId = 0;//id vrcholu pro pridani id do instanci Sklad, Oaza
 			
-			PriorityQueue<Event> events = new PriorityQueue<Event>();
+			List<Event> events = new ArrayList<>();
 			
 			int sklady = sc.nextInt();
 			for(int i = 0; i < sklady; i++) {
 				Sklad stock = new Sklad(nodesId++, sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextDouble(),sc.nextDouble());
+				//System.out.println("BasketMakingTime: " + stock.basketMakingTime);
 				graph.addNode(stock);//pridani vrcholu do grafu
 				events.add(new Event(stock.loadingTime, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
 			}

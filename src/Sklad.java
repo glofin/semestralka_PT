@@ -46,6 +46,41 @@ public class Sklad extends AbstractNode {
 		basketCount += newBaskets;
 	}
 
+	public SortedSet<Velbloud> getSet() {
+		return set;
+	}
+
+	public void addCamelToSet(Velbloud velbloud) {
+		set.add(velbloud);
+	}
+	public void removeCamelFromSet(Velbloud velbloud){
+		set.remove(velbloud);
+	}
+
+	public void removeBaskets(int count){
+		basketCount -= count;
+	}
+
+	public int getBasketCount() {
+		return basketCount;
+	}
+
+	public double getBasketMakingTime() {
+		return basketMakingTime;
+	}
+
+	public double getLoadingTime() {
+		return loadingTime;
+	}
+
+	public int getNewBaskets() {
+		return newBaskets;
+	}
+
+	public SortedSet<Velbloud> getVelbloudSet() {
+		return set;
+	}
+
 	@Override
 	public String toString() {
 		return "Stock{" +
@@ -64,6 +99,7 @@ public class Sklad extends AbstractNode {
 	public int compareTo(AbstractNode o) {
 		return this.id - o.id;
 	}
-	
-	
+
+
+
 }

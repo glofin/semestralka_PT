@@ -1,6 +1,8 @@
 
 public enum EventType {
-	End, //TODO ve finalni verti odstranit
+
+	/** Vypis error kdyz se nepodari task */
+	ErrorTask,
 	
 	/** Doplneni kosu do skladu */
 	StorageRefill,

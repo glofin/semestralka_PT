@@ -30,7 +30,11 @@ public class Velbloud implements Comparable<Velbloud> {
  	/** Aktualni pozadavek, ktery tento velbloud vykonava */
  	public Task task = null;
 
- 	
+	 private static double druhMaxDistance;
+
+	 private static double druhMaxSpeed;
+
+
  	private Velbloud(double spd, double mDistance, DruhVelblouda drh, Sklad skld) {
  		druh = drh;
  		druh.count++;
@@ -87,10 +91,41 @@ public class Velbloud implements Comparable<Velbloud> {
  	}
  
 	/**
-	 * @param druhy 	Druhy velbloudu, ktere je mozne generovat
+	 * @param pole 	Druhy velbloudu, ktere je mozne generovat
 	 */
 	public static void setDruhy(DruhVelblouda[] pole) {
 		druhy = pole;
+
+		double maxDistance = -1;
+		double maxSpeed = -1;
+
+		for (DruhVelblouda druh :
+				pole) {
+			maxDistance = Math.max(druh.getMaxDistance(),maxDistance);
+			maxSpeed = Math.max(druh.getMaxSpeed(),maxSpeed);
+		}
+		druhMaxDistance = maxDistance;
+		druhMaxSpeed = maxSpeed;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	public double getMaxDistance() {
+		return maxDistance;
+	}
+
+	public static double getDruhMaxDistance() {
+		return druhMaxDistance;
+	}
+
+	public static double getDruhMaxSpeed() {
+		return druhMaxSpeed;
+	}
+
+	public double getSpeed() {
+		return speed;
 	}
 
 	/**
