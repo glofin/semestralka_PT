@@ -35,12 +35,17 @@ public class Event implements Comparable<Event> {
 			return 1;
 		}
 		
-		if(o.type == EventType.StorageRefill && this.type != EventType.StorageRefill) {
+		if(o.type == EventType.StorageRefill) {
 			return 1;
-		} else if(o.type != EventType.StorageRefill && this.type == EventType.StorageRefill) {
+		} else if(this.type == EventType.StorageRefill) {
 			return -1;
 		}
 		
+		if(o.type == EventType.NewTask) {
+			return -1;
+		} else if(this.type == EventType.NewTask) {
+			return 1;
+		}
 		if(o.type == EventType.NewTask && this.type == EventType.NewTask) {
 			return this.index - o.index;
 		}

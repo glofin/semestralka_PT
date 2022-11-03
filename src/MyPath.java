@@ -1,6 +1,6 @@
 import java.util.Arrays;
 
-public class MyPath {
+public class MyPath implements Comparable<MyPath>{
     private final Edge[] edgesArr;
 
     private final double fullDistance;
@@ -50,4 +50,12 @@ public class MyPath {
                 ", maxDistance=" + maxDistance +
                 '}';
     }
+
+	@Override
+	public int compareTo(MyPath o) {
+		if(o.getFullDistance() > this.getFullDistance()) {
+			return -1;
+		}
+		return 1;
+	}
 }

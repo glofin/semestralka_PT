@@ -121,8 +121,7 @@ public class Graph {
                 pathList.add(new MyPath(edgeList.toArray(new Edge[0])));
             }
         }
-
-        pathList.sort(((o1, o2) -> (int)(o2.getFullDistance() - o1.getFullDistance())));
+        Collections.sort(pathList);
         return pathList;
     }
 
