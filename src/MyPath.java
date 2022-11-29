@@ -55,7 +55,9 @@ public class MyPath implements Comparable<MyPath>{
 	public int compareTo(MyPath o) {
 		if(o.getFullDistance() > this.getFullDistance()) {
 			return -1;
+		} else if (o.getFullDistance() < this.getFullDistance()) {
+			return 1;
 		}
-		return 1;
+		return 0;
 	}
 }

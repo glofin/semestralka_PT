@@ -29,23 +29,58 @@ public class Event implements Comparable<Event> {
 
 	@Override
 	public int compareTo(Event o) {
+		//Nejprve podle casu
 		if(o.time > this.time) {
 			return -1;
 		} else if(o.time < this.time) {
 			return 1;
 		}
 		
-		if(o.type == EventType.StorageRefill) {
-			return 1;
-		} else if(this.type == EventType.StorageRefill) {
-			return -1;
+		if(o.type != this.type) {
+			//storageRefill ma prednost 
+			if(o.type == EventType.StorageRefill) {
+				return 1;
+			} else if(this.type == EventType.StorageRefill) {
+				return -1;
+			}
+		
+			//CamelDeparting jako druhy
+			if(o.type == EventType.CamelDeparting) {
+				return 1;
+			} else if(this.type == EventType.CamelDeparting) {
+				return -1;
+			}
+			
+			//CamelDrinks nebo CamelTransit jako druhy
+			if(o.type == EventType.CamelDrinks || o.type == EventType.CamelTransit) {
+				return 1;
+			} else if(this.type == EventType.CamelDrinks || this.type == EventType.CamelTransit) {
+				return -1;
+			}
+			
+			//CamelFinished jako treti
+			if(o.type == EventType.CamelFinished) {
+				return 1;
+			} else if(this.type == EventType.CamelFinished) {
+				return -1;
+			}
+			
+			//NewTask
+			if(o.type == EventType.NewTask) {
+				return -1;
+			} else if(this.type == EventType.NewTask) {
+				return 1;
+			}
+			
+			//CamelHome nakonec <- docasne
+			if(o.type == EventType.CamelTransit) {
+				return 1;
+			} else if(this.type == EventType.CamelTransit) {
+				return -1;
+			}
 		}
 		
-		if(o.type == EventType.NewTask) {
-			return -1;
-		} else if(this.type == EventType.NewTask) {
-			return 1;
-		}
+		//tasky s mensim indexem ze vstupniho souboru se zpracuji prvni
 		if(o.type == EventType.NewTask && this.type == EventType.NewTask) {
 			return this.index - o.index;
 		}

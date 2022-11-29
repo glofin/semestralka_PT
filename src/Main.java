@@ -1,6 +1,4 @@
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class Main {
@@ -19,7 +17,7 @@ public class Main {
 
 		//NACTENI SOUBORU
 		try {
-			String input = Parser.fileToString("data/centre_small.txt");
+			String input = Parser.fileToString("data/dense_small.txt");
 			setUp(input);
 			//System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {//chyba ve vstupnim souboru nebo jeho jmene

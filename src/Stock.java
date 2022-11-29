@@ -2,7 +2,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * Instance tridy {@code Sklad} predstavuji jednotlive sklady, ze kterych jsou vysilani velbloudi s nakladem kosu
+ * Instance tridy {@code Stock} predstavuji jednotlive sklady, ze kterych jsou vysilani velbloudi s nakladem kosu
  */
 public class Stock extends AbstractNode {
 
@@ -18,7 +18,7 @@ public class Stock extends AbstractNode {
 	final int newBaskets;
 	
 	/** Mnozina vsech velbloudu, kteri jsou aktualne ve skladu */
-	SortedSet<Camel> set;
+	SortedSet<Camel> camelSet;
 	
 	
 	/**
@@ -36,7 +36,7 @@ public class Stock extends AbstractNode {
 		newBaskets = basketCount;
 		this.basketMakingTime = basketMakingTime;
 		this.loadingTime = loadingTime;
-		set = new TreeSet<Camel>();
+		camelSet = new TreeSet<Camel>();
 	}
 	
 	/**
@@ -47,14 +47,16 @@ public class Stock extends AbstractNode {
 	}
 
 	public SortedSet<Camel> getSet() {
-		return set;
+		return camelSet;
 	}
 
 	public void addCamelToSet(Camel camel) {
-		set.add(camel);
+		camelSet.add(camel);
 	}
 	public void removeCamelFromSet(Camel camel){
-		set.remove(camel);
+		if(!camelSet.remove(camel)) {
+			System.out.println("Velblouda se nepodarilo odstranit ze skladu");
+		}
 	}
 
 	public void removeBaskets(int count){
@@ -77,8 +79,8 @@ public class Stock extends AbstractNode {
 		return newBaskets;
 	}
 
-	public SortedSet<Camel> getVelbloudSet() {
-		return set;
+	public SortedSet<Camel> getCamelSet() {
+		return camelSet;
 	}
 
 	@Override
