@@ -13,7 +13,7 @@ public class Parser {
 	public static void main(String[] args) throws Exception {
 		
 		try {
-			String input = fileToString("data/tutorial.txt");
+			String input = fileToString("data/centre_small.txt");
 			setUp(input);
 			//System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {
@@ -59,7 +59,7 @@ public class Parser {
 
 			int nodesId = 0;//id vrcholu pro pridani id do instanci Sklad, Oaza
 			
-			PriorityQueue<Event> events = new PriorityQueue<Event>();
+			List<Event> events = new ArrayList<>();
 			
 			int sklady = sc.nextInt();
 			for(int i = 0; i < sklady; i++) {
@@ -101,4 +101,24 @@ public class Parser {
 		
 	}
 	
+	
+	/**
+	 * Spoji pole skladu a pole velbloudu do jednoho pole reprezentujici vrcholy grafu
+	 * 
+	 * @param sklady
+	 * @param oazy
+	 */
+	/**
+	private static void udelejVrcholy(Sklad[] sklady, Oaza[] oazy) {
+		AbstractNode[] locations = new AbstractNode[oazy.length + sklady.length];
+		for(int i = 0, j = 0; i < locations.length; i++, j++) {
+			if(j < sklady.length) {
+				locations[i] = sklady[j];
+			} else {
+				locations[i] = oazy[j - sklady.length];
+			}
+		}
+		EventManager.locations = locations;
+	}
+	*/
 }

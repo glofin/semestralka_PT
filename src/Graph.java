@@ -91,6 +91,9 @@ public class Graph {
      * @return
      */
     public List<MyPath> getPathtoOasisList(int idOasis){
+        //TODO zajistit aby .txt s 0 vzdalenostma mezi body fungoval
+        //TODO cas nakladani kosu ve skladu na velblouda
+        //TODO dlouhy soubory padaji
         Oaza oasis = (Oaza) nodesList.get(idOasis);
         runDijkstraOnNodes(oasis);
 
@@ -131,6 +134,7 @@ public class Graph {
      * @param source
      */
     private void runDijkstraOnNodes(AbstractNode source){
+        //TODO neukladat distance a shortestPath do Node protoze to ma kazda cesta jinak
        // System.out.println(source);
 
         nodesList.forEach(abstractNode -> abstractNode.setDistance(1000000000));

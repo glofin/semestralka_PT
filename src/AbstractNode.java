@@ -47,17 +47,5 @@ public abstract class AbstractNode implements Comparable<AbstractNode> {
 	public Map<AbstractNode, AbstractNode> getShortestPaths() {
 		return shortestPaths;
 	}
-
-	//TODO: hashCode a equals pro Node
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
 }
 
