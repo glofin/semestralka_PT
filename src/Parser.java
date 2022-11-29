@@ -10,7 +10,7 @@ public class Parser {
 	
 	private static EventManager manager;
 	
-	public static void main(String[] args) throws Exception {
+	/*public static void main(String[] args) throws Exception {
 		
 		try {
 			String input = fileToString("data/centre_small.txt");
@@ -21,6 +21,26 @@ public class Parser {
 			System.exit(0);
 		}
 		while(true) {
+			manager.nextEvent();
+		}
+	}*/
+
+	/**
+	 * metoda precte soubor z fileName a nastaviho do datovych struktur
+	 * pouzivanych v aplikaci a nastavi eventManager
+	 * @param fileName jmeno souboru kde jsou data pro chod aplikace
+	 * @throws Exception chyba ve cteni
+	 */
+	public static void readFile(String fileName) throws Exception {
+		try {
+			String input = fileToString(fileName);
+			setUp(input);
+			//System.out.println(graph.toString());//vypis grafu
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		while(true) {//TODO konci jen vyjimkou predelat
 			manager.nextEvent();
 		}
 	}
@@ -48,55 +68,49 @@ public class Parser {
 	/**
 	 * Z atributu vstup nacte data a ulozi je do jednotlivych poli
 	 * 
-	 * @param vstup			vstupni data 
-	 * @throws IOException	pri spatnem formatu vstupniho souboru
+	 * @param vstup			vstupni data
 	 */
 	private static void setUp(String vstup) {
-		Scanner sc = null;
-		try {
-			sc = new Scanner(vstup);
+		try (Scanner sc = new Scanner(vstup)) {
 			sc.useLocale(Locale.US);
 
 			int nodesId = 0;//id vrcholu pro pridani id do instanci Sklad, Oaza
-			
-			List<Event> events = new ArrayList<>();
-			
+
+			PriorityQueue<Event> events = new PriorityQueue<>();
+
 			int sklady = sc.nextInt();
-			for(int i = 0; i < sklady; i++) {
-				Sklad stock = new Sklad(nodesId++, sc.nextDouble(),sc.nextDouble(),sc.nextInt(),sc.nextDouble(),sc.nextDouble());
+			for (int i = 0; i < sklady; i++) {
+				Stock stock = new Stock(nodesId++, sc.nextDouble(), sc.nextDouble(), sc.nextInt(), sc.nextDouble(), sc.nextDouble());
 				//System.out.println("BasketMakingTime: " + stock.basketMakingTime);
 				graph.addNode(stock);//pridani vrcholu do grafu
-				events.add(new Event(stock.loadingTime, EventType.StorageRefill, i));	//vytvori skladu event typu storageRefill
+				events.add(new Event(stock.loadingTime, EventType.StorageRefill, i));    //vytvori skladu event typu storageRefill
 			}
-			
+
 			int oazy = sc.nextInt();
-			for(int i = 0; i < oazy; i++) {
-				Oaza oasis = new Oaza(nodesId++, sc.nextDouble(),sc.nextDouble());
+			for (int i = 0; i < oazy; i++) {
+				Oasis oasis = new Oasis(nodesId++, sc.nextDouble(), sc.nextDouble());
 				graph.addNode(oasis);//pridani vrcholu do grafu
 			}
-			
+
 			int edgesCount = sc.nextInt();
-			for(int i = 0; i < edgesCount; i++) {
+			for (int i = 0; i < edgesCount; i++) {
 				graph.addEdge(graph.getNodebyId(sc.nextInt() - 1), graph.getNodebyId(sc.nextInt() - 1));//TODO zmenit getNodebyId
 			}
-			
-			DruhVelblouda[] DruhyVelblouda = new DruhVelblouda[sc.nextInt()];
-			for(int i = 0; i < DruhyVelblouda.length; i++) {
-				DruhyVelblouda[i] = new DruhVelblouda(sc.next(), sc.nextDouble(), sc.nextDouble(),
+
+			CamelType[] DruhyVelblouda = new CamelType[sc.nextInt()];
+			for (int i = 0; i < DruhyVelblouda.length; i++) {
+				DruhyVelblouda[i] = new CamelType(sc.next(), sc.nextDouble(), sc.nextDouble(),
 						sc.nextDouble(), sc.nextDouble(), sc.nextDouble(), sc.nextInt(), sc.nextDouble());
 			}
-			Velbloud.setDruhy(DruhyVelblouda);
-			
-			Task[] tasks =  new Task[sc.nextInt()];
+			Camel.setDruhy(DruhyVelblouda);
+
+			Task[] tasks = new Task[sc.nextInt()];
 			for (int i = 0; i < tasks.length; i++) {
 				tasks[i] = new Task(sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());
-				events.add(new Event(tasks[i].arrivalTime, EventType.NewTask, i));	//vytvori event typu newTask
+				events.add(new Event(tasks[i].arrivalTime, EventType.NewTask, i));    //vytvori event typu newTask
 			}
-			
+
 			manager = new EventManager(events, tasks, sklady);
-			
-		} finally {
-			sc.close();
 		}
 		
 	}

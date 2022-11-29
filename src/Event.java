@@ -4,27 +4,27 @@ public class Event implements Comparable<Event> {
 	double time;
 	EventType type;
 	int index;
-	Velbloud velbloud;
+	Camel camel;
 	
 	/**
 	 * 
 	 * @param time		cas, kdy ma tato udalost nastat
 	 * @param type		typ udalosti
 	 * @param index 	index vrcholu (nebo pozadavku), ke kteremu se event vztahuje
-	 * @param velbloud	velbloud ke kteremu se event vztahuje
+	 * @param camel	velbloud ke kteremu se event vztahuje
 	 */
-	public Event(double time, EventType type, int index, Velbloud velbloud) {
+	public Event(double time, EventType type, int index, Camel camel) {
 		this.time = time;
 		this.type = type;
 		this.index = index;
-		this.velbloud = velbloud;
+		this.camel = camel;
 	}
 	
 	public Event(double time, EventType type, int index) {
 		this.time = time;
 		this.type = type;
 		this.index = index;
-		this.velbloud = null;
+		this.camel = null;
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class Event implements Comparable<Event> {
 				"time=" + time +
 				", type=" + type +
 				", index=" + index +
-				", velbloud=" + velbloud +
+				", velbloud=" + camel +
 				'}';
 	}
 }

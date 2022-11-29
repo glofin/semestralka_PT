@@ -26,8 +26,8 @@ public class MyPath implements Comparable<MyPath>{
         return new double[]{count,max};
     }
 
-    public Sklad getStartStock(){
-        return (Sklad) edgesArr[0].getStartNode();
+    public Stock getStartStock(){
+        return (Stock) edgesArr[0].getStartNode();
     }
 
     public Edge[] getEdgesArr() {

@@ -94,14 +94,14 @@ public class Graph {
         //TODO zajistit aby .txt s 0 vzdalenostma mezi body fungoval
         //TODO cas nakladani kosu ve skladu na velblouda
         //TODO dlouhy soubory padaji
-        Oaza oasis = (Oaza) nodesList.get(idOasis);
+        Oasis oasis = (Oasis) nodesList.get(idOasis);
         runDijkstraOnNodes(oasis);
 
         List<MyPath> pathList = new ArrayList<>();
         //System.out.println(nodesList.toString());
 
         for (AbstractNode node : nodesList){
-            if (node instanceof Sklad){
+            if (node instanceof Stock){
 
                 List<Edge> edgeList = new ArrayList<>();
                // System.out.println(node.getClass() + " id " + node.getId());
