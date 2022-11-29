@@ -91,8 +91,6 @@ public class Graph {
      * @return
      */
     public List<MyPath> getPathtoOasisList(int idOasis){
-        //TODO zajistit aby .txt s 0 vzdalenostma mezi body fungoval
-        //TODO cas nakladani kosu ve skladu na velblouda
         //TODO dlouhy soubory padaji
         Oasis oasis = (Oasis) nodesList.get(idOasis);
         runDijkstraOnNodes(oasis);

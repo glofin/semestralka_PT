@@ -2,10 +2,11 @@ import java.util.*;
 
 /**
  * Trida se stara o nadchazejici udalosti casove linie
- * 
  * vzor: jedinacek
  */
-public class EventManager {//TODO PRIORITA ERROR stav
+public class EventManager {
+	//TODO PRIORITA ERROR stav
+	//TODO spatne poradi vypisu v dense_small.txt - stejny cas kazi se poradi
 	
 	/** Pocet skladu */
 	final int count;
@@ -24,53 +25,41 @@ public class EventManager {//TODO PRIORITA ERROR stav
 		this.tasks = tasks;
 		this.count = count;
 	}
-	
-	public void nextEvent() throws Exception {
+
+	/**
+	 * Metoda zpracovava dalsi pozadavek eventy ve fronte events
+	 * @return true - pozadavek neni errorType; false - pozadavek je errorType, konec programu
+	 */
+	public boolean nextEvent() {
 		
 		//events.add(new Event(100000, EventType.End, 0)); //automaticky zastavi program pokud prekroci cas 100 000
 		if (events.size()<1) System.exit(1);
 		Event e = events.poll();
 		//System.out.println(events.toString());
 
-		switch(Objects.requireNonNull(e).type) {
-			case StorageRefill:
-				reffilStorage(e);
-				break;
-			
-			case NewTask:
-				doTask(e);
-				break;
-				
-			case CamelDeparting:
-				camelDeparting(e);
-				break;
-					
-			case CamelFinished:
-				camelFinished(e);
-				break;
-					
-			case CamelDrinks:
-				cameldrinks(e);
-				break;
-					
-			case CamelTransit:
-				camelTransit(e);
-				break;
-				
-			case CamelHome:
-				camelHome(e);
-				break;
-					
-			case ErrorTask:
-				//System.out.println("\nUkoncuji v case 100 000"); //TODO ve finalni verzi odstranit
+		switch (Objects.requireNonNull(e).type) {
+			case StorageRefill -> reffilStorage(e);
+			case NewTask -> doTask(e);
+			case CamelDeparting -> camelDeparting(e);
+			case CamelFinished -> camelFinished(e);
+			case CamelDrinks -> cameldrinks(e);
+			case CamelTransit -> camelTransit(e);
+			case CamelHome -> camelHome(e);
+			case ErrorTask -> {
 				errorTask(e);
-				
-			default:
-				System.exit(0);					
+				return false;
+			}
+			default -> System.exit(0);
 		}
+		return true;
 	}
 
+	/*--------------------------------------------------------------------------------------------------------------*/
+
+
 	private void camelHome(Event e) {
+		assert e.type != EventType.CamelHome : "Wrong EventType";
+
 		numberOftravelingCamels--;
 		System.out.printf(Locale.US, "Cas: %d, Velbloud: %s, Navrat do skladu: %d\n",
 								Math.round(e.time),
@@ -81,6 +70,8 @@ public class EventManager {//TODO PRIORITA ERROR stav
 
 
 	private void camelTransit(Event e) {
+		assert e.type != EventType.CamelTransit : "Wrong EventType";
+
 		if(e.index >= count) {
 			System.out.printf(Locale.US, "Cas: %d, Velbloud: %s, Oaza: %d, Kuk na velblouda\n",
 						Math.round(e.time),
@@ -92,6 +83,8 @@ public class EventManager {//TODO PRIORITA ERROR stav
 
 
 	private void cameldrinks(Event e) {
+		assert e.type != EventType.CamelDrinks : "Wrong EventType";
+
 		String s;
 		if(e.index < count) {
 			s = "Sklad";
@@ -112,6 +105,8 @@ public class EventManager {//TODO PRIORITA ERROR stav
 
 
 	private void camelFinished(Event e) {
+		assert e.type != EventType.CamelFinished : "Wrong EventType";
+
 		//double finishedTime = e.time + (e.velbloud.task.basketCount * e.velbloud.home.loadingTime);
 		double finishedTime = e.time + basketsManipulationTime(e.camel);
 		System.out.printf(Locale.US, "Cas: %d, Velbloud: %s, Oaza: %d, Vylozeno kosu: %d, Vylozeno v: %d, Casova rezerva: %d\n",
@@ -126,6 +121,8 @@ public class EventManager {//TODO PRIORITA ERROR stav
 
 
 	private void camelDeparting(Event e) {
+		assert e.type != EventType.CamelDeparting : "Wrong EventType";
+
 		numberOftravelingCamels = numberOftravelingCamels == -1 ? numberOftravelingCamels +2 : numberOftravelingCamels +1;
 		System.out.printf(Locale.US, "Cas: %d, Velbloud: %s, Sklad %d, Nalozeno kosu: %d, Odchod v %d\n",
 				Math.round(e.time),
@@ -139,27 +136,40 @@ public class EventManager {//TODO PRIORITA ERROR stav
 
 		//e.velbloud.home.removeBaskets(e.velbloud.task.basketCount);
 	}
-
+	/* pomocna trida k metode vyse ^ */
 	private double basketsManipulationTime(Camel camel){
 		return (camel.home.loadingTime * camel.task.basketCount);
 	}
 
+
 	private void reffilStorage(Event e) {
+		assert e.type != EventType.StorageRefill : "Wrong EventType";
+
 		//System.out.println("reffill");
-		Stock refill = ((Stock) Parser.graph.getNodebyId(e.index));
+		Stock refill = ((Stock) Main.graph.getNodebyId(e.index));
 		refill.makeBaskets();
 		if (numberOftravelingCamels != 0) events.add(new Event(e.time + refill.basketMakingTime, EventType.StorageRefill, e.index));
 	}
 
-	private void errorTask(Event e){
+
+	private void errorTask(Event e) {
+		assert e.type != EventType.ErrorTask : "Wrong EventType";
+
 		System.out.printf(Locale.US, "Cas: %d, Oaza: %d, Vsichni vymreli, Harpagon zkrachoval, Konec simulace",
 							Math.round(e.time),
 							e.index + 1
 							);
-		System.exit(0);
 	}
 
-	private void doTask(Event e) throws Exception {
+
+	/**
+	 * Metoda zaridi vyhodnoceni pozadavku
+	 * vysle velblouda, generuje velblouda, posle ho ...
+	 * @param e event kde je task a zpracovava se
+	 */
+	private void doTask(Event e) {
+		assert e.type != EventType.NewTask : "Wrong EventType";
+
 		//vice velbloudu obslouzi task
 		Task t = tasks[e.index];
 		System.out.printf(Locale.US, "Cas: %d, Pozadavek: %d, Oaza: %d, Pocet kosu: %d, Deadline: %d\n",
@@ -225,9 +235,8 @@ public class EventManager {//TODO PRIORITA ERROR stav
 			double velbloudMaxDistance;
 			long startTime = System.currentTimeMillis();
 			do {
-				if (((System.currentTimeMillis() - startTime)/1000)>10){
-					throw new Exception("Velbloudi se generuji dele nez 10s");
-				}
+				assert ((System.currentTimeMillis() - startTime)/1000)>10 : "Velbloudi se generuji dele nez 10s";
+
 				selectedCamel = Camel.generujVelblouda(startStock);
 				velbloudMaxDistance = selectedCamel.getMaxDistance();
 			} while (velbloudMaxDistance < maxDistanceOnPath);
@@ -237,6 +246,8 @@ public class EventManager {//TODO PRIORITA ERROR stav
 		planEventsforTask(t.arrivalTime, currentPath, selectedCamel, t.basketCount);
 
 	}
+
+	/*------------------------------------------------------------------------------------------------------------*/
 
 	/**
 	 * Naplanuje Eventy do EventManageru ktery jsou tvoreny
@@ -250,7 +261,7 @@ public class EventManager {//TODO PRIORITA ERROR stav
 		int idStock = path.getStartStock().getId();
 		double basketManipTime = basketsManipulationTime(camel);
 
-		//KONTROLA JESTLI MA SKLAD DOST KOSU
+		//TODO KONTROLA JESTLI MA SKLAD DOST KOSU a cekani na vygenerovani
 		/*int busketCntStock = path.getStartStock().getBasketCount();
 		if (busketCntStock < basketCount){
 			int difference = basketCount - busketCntStock;
@@ -263,6 +274,7 @@ public class EventManager {//TODO PRIORITA ERROR stav
 		//CAMEL DEPARTING
 		events.add(new Event(time, EventType.CamelDeparting, idStock, camel));
 		time += basketManipTime;
+		//TODO kontrola jestli unese velboloud kose (rozdeleni kosu mezi nekolik velbloudu)
 
 		//CAMEL TRAVELING
 		Edge[] edges = path.getEdgesArr();
