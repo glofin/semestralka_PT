@@ -182,7 +182,7 @@ public class EventManager {
 		int idPathtoOasis;//id cesty v seznamu pathstoOasis ktera je mozna s max druhem (nejrychlejsi cesta pri generovani)
 		double maxDistanceOnPath = Double.MAX_VALUE;
 		MyPath currentPath = null;
-		double maxCamelTypeDistance = Camel.getDruhMaxDistance();
+		double maxCamelTypeDistance = Camel.getTypeMaxDistance();
 
 		for (idPathtoOasis = 0; idPathtoOasis < pathstoOasis.size(); idPathtoOasis++) {
 			currentPath = pathstoOasis.get(idPathtoOasis);
@@ -196,7 +196,7 @@ public class EventManager {
 		assert currentPath != null;
 		double distance = currentPath.getFullDistance();
 		double maxTimeforTask = t.deadline - t.arrivalTime;
-		double idealCamelTime = Camel.getDruhMaxSpeed() / distance;
+		double idealCamelTime = Camel.getTypeMaxSpeed() / distance;
 		if (distance != 0 && idealCamelTime > maxTimeforTask)
 			events.add(new Event(t.arrivalTime, EventType.ErrorTask, t.oaza));
 
@@ -235,7 +235,7 @@ public class EventManager {
 			do {
 				assert ((System.currentTimeMillis() - startTime)/1000)>10 : "Velbloudi se generuji dele nez 10s";
 
-				selectedCamel = Camel.generujVelblouda(startStock);
+				selectedCamel = Camel.generateCamel(startStock);
 				velbloudMaxDistance = selectedCamel.getMaxDistance();
 			} while (velbloudMaxDistance < maxDistanceOnPath);
 		}

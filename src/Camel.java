@@ -53,15 +53,15 @@ public class Camel implements Comparable<Camel> {
  	 * @param stock 	sklad, do ktereho bude velbloud prirazen
  	 * @return 			nove vygenerovany velbloud
  	 */
- 	public static Camel generujVelblouda(Stock stock) {
+ 	public static Camel generateCamel(Stock stock) {
 
- 		CamelType druh = generateType();
-		double rangeSpeed = druh.maxV - druh.minV;
-		double speed = druh.maxV - (Math.random() * rangeSpeed);
-		double rangeDistance = druh.maxD - druh.minD;
-		double mDistance = druh.maxD - (Math.random() * rangeDistance);
+ 		CamelType type = generateType();
+		double rangeSpeed = type.maxV - type.minV;
+		double speed = type.maxV - (Math.random() * rangeSpeed);
+		double rangeDistance = type.maxD - type.minD;
+		double mDistance = type.maxD - (Math.random() * rangeDistance);
 		
-		Camel v = new Camel(speed, mDistance, druh, stock);
+		Camel v = new Camel(speed, mDistance, type, stock);
 		stock.getCamelSet().add(v);
 		return v;
  	}
@@ -93,16 +93,16 @@ public class Camel implements Comparable<Camel> {
  	}
  
 	/**
-	 * @param pole 	Druhy velbloudu, ktere je mozne generovat
+	 * @param array 	Druhy velbloudu, ktere je mozne generovat
 	 */
-	public static void setDruhy(CamelType[] pole) {
-		types = pole;
+	public static void setTypes(CamelType[] array) {
+		types = array;
 
 		double maxDistance = -1;
 		double maxSpeed = -1;
 
 		for (CamelType druh :
-				pole) {
+				array) {
 			maxDistance = Math.max(druh.getMaxDistance(),maxDistance);
 			maxSpeed = Math.max(druh.getMaxSpeed(),maxSpeed);
 		}
@@ -118,11 +118,11 @@ public class Camel implements Comparable<Camel> {
 		return maxDistance;
 	}
 
-	public static double getDruhMaxDistance() {
+	public static double getTypeMaxDistance() {
 		return druhMaxDistance;
 	}
 
-	public static double getDruhMaxSpeed() {
+	public static double getTypeMaxSpeed() {
 		return druhMaxSpeed;
 	}
 

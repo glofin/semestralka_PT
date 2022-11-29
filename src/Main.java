@@ -46,16 +46,15 @@ public class Main {
 
 			PriorityQueue<Event> events = new PriorityQueue<>();
 
-			int sklady = sc.nextInt();
-			for (int i = 0; i < sklady; i++) {
+			int stockCount = sc.nextInt();
+			for (int i = 0; i < stockCount; i++) {
 				Stock stock = new Stock(nodesId++, sc.nextDouble(), sc.nextDouble(), sc.nextInt(), sc.nextDouble(), sc.nextDouble());
-				//System.out.println("BasketMakingTime: " + stock.basketMakingTime);
 				graph.addNode(stock);//pridani vrcholu do grafu
 				events.add(new Event(stock.loadingTime, EventType.StorageRefill, i));    //vytvori skladu event typu storageRefill
 			}
 
-			int oazy = sc.nextInt();
-			for (int i = 0; i < oazy; i++) {
+			int oasisCount = sc.nextInt();
+			for (int i = 0; i < oasisCount; i++) {
 				Oasis oasis = new Oasis(nodesId++, sc.nextDouble(), sc.nextDouble());
 				graph.addNode(oasis);//pridani vrcholu do grafu
 			}
@@ -65,12 +64,12 @@ public class Main {
 				graph.addEdge(graph.getNodebyId(sc.nextInt() - 1), graph.getNodebyId(sc.nextInt() - 1));//TODO zmenit getNodebyId
 			}
 
-			CamelType[] DruhyVelblouda = new CamelType[sc.nextInt()];
-			for (int i = 0; i < DruhyVelblouda.length; i++) {
-				DruhyVelblouda[i] = new CamelType(sc.next(), sc.nextDouble(), sc.nextDouble(),
+			CamelType[] camelTypes = new CamelType[sc.nextInt()];
+			for (int i = 0; i < camelTypes.length; i++) {
+				camelTypes[i] = new CamelType(sc.next(), sc.nextDouble(), sc.nextDouble(),
 						sc.nextDouble(), sc.nextDouble(), sc.nextDouble(), sc.nextInt(), sc.nextDouble());
 			}
-			Camel.setDruhy(DruhyVelblouda);
+			Camel.setTypes(camelTypes);
 
 			Task[] tasks = new Task[sc.nextInt()];
 			for (int i = 0; i < tasks.length; i++) {
@@ -78,29 +77,9 @@ public class Main {
 				events.add(new Event(tasks[i].arrivalTime, EventType.NewTask, i));    //vytvori event typu newTask
 			}
 
-			manager = new EventManager(events, tasks, sklady);
+			manager = new EventManager(events, tasks, stockCount);
 		}
 		
 	}
-	
-	
-	/**
-	 * Spoji pole skladu a pole velbloudu do jednoho pole reprezentujici vrcholy grafu
-	 * 
-	 * @param sklady
-	 * @param oazy
-	 */
-	/**
-	private static void udelejVrcholy(Sklad[] sklady, Oaza[] oazy) {
-		AbstractNode[] locations = new AbstractNode[oazy.length + sklady.length];
-		for(int i = 0, j = 0; i < locations.length; i++, j++) {
-			if(j < sklady.length) {
-				locations[i] = sklady[j];
-			} else {
-				locations[i] = oazy[j - sklady.length];
-			}
-		}
-		EventManager.locations = locations;
-	}
-	*/
+
 }
