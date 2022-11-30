@@ -1,6 +1,4 @@
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class Main {
@@ -72,8 +70,9 @@ public class Main {
 				DruhyVelblouda[i] = new CamelType(sc.next(), sc.nextDouble(), sc.nextDouble(),
 						sc.nextDouble(), sc.nextDouble(), sc.nextDouble(), sc.nextInt(), sc.nextDouble());
 			}
-			Camel.setDruhy(DruhyVelblouda);
+			Camel.setCamelType(DruhyVelblouda);
 
+			//Tasks maji stejny index jako Event typ:NewTask - index
 			Task[] tasks = new Task[sc.nextInt()];
 			for (int i = 0; i < tasks.length; i++) {
 				tasks[i] = new Task(sc.nextDouble(), sc.nextInt(), sc.nextInt(), sc.nextDouble());

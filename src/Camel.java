@@ -56,6 +56,7 @@ public class Camel implements Comparable<Camel> {
  	public static Camel generujVelblouda(Stock stock) {
 
  		CamelType druh = generujDruh();
+		assert druh != null;
 		double rangeSpeed = druh.maxV - druh.minV;
 		double speed = druh.maxV - (Math.random() * rangeSpeed);
 		double rangeDistance = druh.maxD - druh.minD;
@@ -73,29 +74,29 @@ public class Camel implements Comparable<Camel> {
  	private static CamelType generujDruh() {
  		double sance = 0;
  		double random = Math.random();
- 		
- 		for(int i = 0; i < druhy.length; i++) {
- 			
- 			sance += druhy[i].chance;
- 			
- 			if(random <= sance) {
- 				return druhy[i];
- 			}
- 		}
+
+		for (CamelType camelType : druhy) {
+
+			sance += camelType.chance;
+
+			if (random <= sance) {
+				return camelType;
+			}
+		}
 		return null;
 	}
 
 	/**
  	 *  Velbloud se napije a doplni si zasobu vody
  	 */
- 	public void Drink() {
+ 	public void drink() {//TODO neni vyuzita ale asi by mela
  		distance = maxDistance;
  	}
  
 	/**
 	 * @param pole 	Druhy velbloudu, ktere je mozne generovat
 	 */
-	public static void setDruhy(CamelType[] pole) {
+	public static void setCamelType(CamelType[] pole) {
 		druhy = pole;
 
 		double maxDistance = -1;

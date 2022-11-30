@@ -3,19 +3,20 @@ import java.util.*;
 /**
  * Trida reprezentujici mapu/graf
  * vytvoreny z vrcholu (sklady, oazy) a hran (Edge)
- *
  * Navrhovy vzor: prepravka
  */
 public class Graph {
 
     /** prepravka, jedinacek */
     private static Graph messenger;
+
     /** Mapa vrcholu a jeho cest */
     private final Map<AbstractNode, List<Edge>> adjNodes = new HashMap<>();
+
     /** Seznam vrcholu serazenych podle id pro rychly pristup getNodebyId() */
     private final List<AbstractNode> nodesList = new ArrayList<>();
 
-    private Graph(){};
+    private Graph(){}
 
     /** Jedinace dostat graf */
     public static Graph getInstance(){
@@ -69,10 +70,8 @@ public class Graph {
     /**
      * Vypise graf ve tvaru
      * 'Vrchol
-     * -> Hrana
-     *
-     * '
-     * @return
+     * -> Hrana'
+     * @return vypis
      */
     public String toString(){
         StringBuffer output = new StringBuffer();
@@ -87,8 +86,8 @@ public class Graph {
 
     /**
      * Vytvori list cest do oazi ze vsech skladu
-     * @param idOasis
-     * @return
+     * @param idOasis id oazi
+     * @return list cest
      */
     public List<MyPath> getPathtoOasisList(int idOasis){
         //TODO dlouhy soubory padaji
@@ -129,7 +128,7 @@ public class Graph {
     /**
      * Nastavi do vrcholu distance od zvoleneho vrcholu
      * a do shortest Path nejkratsi cestu k vrcholu
-     * @param source
+     * @param source pocatecni vrchol
      */
     private void runDijkstraOnNodes(AbstractNode source){
         //TODO neukladat distance a shortestPath do Node protoze to ma kazda cesta jinak
@@ -168,8 +167,8 @@ public class Graph {
 
     /**
      * Najde v listu workingNodes Node s nejmensi distance
-     * @param workingNodes
-     * @return
+     * @param workingNodes list vrcholu ktere se zpracovavaji
+     * @return vrchol ktery ma nejkratsi vzdalenost z workingNodes
      */
     private AbstractNode findMinDistanceNode(Set<AbstractNode> workingNodes){
         AbstractNode minNode = null;
