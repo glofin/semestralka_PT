@@ -7,7 +7,6 @@ import java.util.*;
 public class EventManager {
 	//TODO spatne poradi vypisu v dense_small.txt - stejny cas kazi se poradi
 	//TODO udelat z EventManager jedinacek
-	
 	/** Pocet skladu */
 	final int count;
 
@@ -16,7 +15,6 @@ public class EventManager {
 	 * je tu kvuli ziskani informaci o Tasku, ktery nejsou v Eventu - type:NewTask
 	 */
 	final Task[] tasks;
-
 	/** Prioritni fronta nadchazejicich eventu serazena podle toho, kdy maji nastat */
 	final PriorityQueue<Event> events;
 
@@ -36,8 +34,7 @@ public class EventManager {
 	 * @return true - pozadavek neni errorType; false - pozadavek je errorType, konec programu
 	 */
 	public boolean nextEvent() {
-		
-		//events.add(new Event(100000, EventType.End, 0)); //automaticky zastavi program pokud prekroci cas 100 000
+
 		if (events.size()<1) System.exit(1);
 		Event e = events.poll();
 		//System.out.println(events.toString());
@@ -102,7 +99,7 @@ public class EventManager {
 								e.camel.name,
 								s,
 								e.idInfo + 1,
-								e.camel.druh.name,
+								e.camel.type.name,
 						Math.round(e.time + e.camel.drinkTime)
 		);
 		
@@ -112,7 +109,6 @@ public class EventManager {
 	private void camelFinished(Event e) {
 		assert e.type != EventType.CamelFinished : "Wrong EventType";
 
-		//double finishedTime = e.time + (e.velbloud.task.basketCount * e.velbloud.home.loadingTime);
 		double finishedTime = e.time + basketsManipulationTime(e.camel);
 		System.out.printf(Locale.US, "Cas: %d, Velbloud: %s, Oaza: %d, Vylozeno kosu: %d, Vylozeno v: %d, Casova rezerva: %d\n",
 				Math.round(e.time),
@@ -134,7 +130,6 @@ public class EventManager {
 								e.camel.name,
 								e.idInfo + 1,
 								e.camel.task.basketCount,//TODO neni realny pocet co nese -> kose na vice velbloudu
-								//e.time + (((Sklad) Parser.graph.getNodebyId(e.index)).loadingTime * e.velbloud.task.basketCount)
 				Math.round(e.time + basketsManipulationTime(e.camel))
 							);
 		//TODO odstranit kose ze skladu, odecist camel ze skladu
@@ -180,6 +175,7 @@ public class EventManager {
 								currentTask.basketCount,
 								Math.round(currentTask.deadline));
 
+		// KONTROLA nejdelsi hrana na ceste jestli zvladne max druh velblouda
 		//TODO predelat do pripravy grafu(pri vytvatvareni grafu vyhodit hrany, ktere velbloud nezvladne)
 		List<MyPath> pathstoOasis = graph.getPathtoOasisList(currentTask.idOaza + count - 1);
 		/* id cesty v seznamu pathstoOasis ktera je mozna s max druhem (nejrychlejsi cesta pri generovani) */
@@ -188,7 +184,7 @@ public class EventManager {
 		MyPath currentPath = null;
 
 		// KONTROLA nejdelsi hrana na ceste jestli zvladne max druh velblouda
-		double maxCamelTypeDistance = Camel.getDruhMaxDistance();
+		double maxCamelTypeDistance = Camel.getTypeMaxDistance();
 		for (idPathtoOasis = 0; idPathtoOasis < pathstoOasis.size(); idPathtoOasis++) {
 			currentPath = pathstoOasis.get(idPathtoOasis);
 			maxDistanceOnPath = currentPath.getMaxDistance();//max vzdalenost jedne hrany na ceste
@@ -201,7 +197,7 @@ public class EventManager {
 		assert currentPath != null;
 		double distance = currentPath.getFullDistance();
 		double maxTimeforTask = currentTask.deadline - currentTask.arrivalTime;
-		double idealCamelTime = Camel.getDruhMaxSpeed() / distance;
+		double idealCamelTime = Camel.getTypeMaxSpeed() / distance;
 		if (distance != 0 && idealCamelTime > maxTimeforTask) {
 			events.add(new Event(currentTask.arrivalTime, EventType.ErrorTask, currentTask.idOaza));
 		}
@@ -214,14 +210,18 @@ public class EventManager {
 			currentPath = pathstoOasis.get(i);
 
 			Stock startStock = currentPath.getStartStock();
-			Set<Camel> camelSet = startStock.getVelbloudSet();
-
-			for (Camel camel :
-					camelSet) {
+			SortedSet<Camel> camelSet = startStock.getCamelSet();
+			if(camelSet.isEmpty()) {continue;}
+			Camel camel = camelSet.first();
+			if (camel.getMaxDistance() > currentPath.getMaxDistance()){
+				selectedCamel = camel;
+				break;
+			}
+/*			for (Camel camel : camelSet) {
 				double velbloudDistance = camel.getMaxDistance();
 				if (velbloudDistance > currentPath.getMaxDistance()){
 					selectedCamel = camel;
-					planEventsforTask(currentTask.arrivalTime, currentPath, selectedCamel, currentTask.basketCount);
+					planEventsforTask(t.arrivalTime, currentPath, selectedCamel, t.basketCount);
 					break;
 				}
 			}//TODO zkontrolovat razeni velbloudu -> zefektivnit tenhle cyklus
@@ -237,7 +237,7 @@ public class EventManager {
 			do {
 				assert ((System.currentTimeMillis() - startTime)/1000)>10 : "Velbloudi se generuji dele nez 10s";
 
-				selectedCamel = Camel.generujVelblouda(startStock);
+				selectedCamel = Camel.generateCamel(startStock);
 				velbloudMaxDistance = selectedCamel.getMaxDistance();
 			} while (velbloudMaxDistance < maxDistanceOnPath);
 		}
@@ -310,7 +310,6 @@ public class EventManager {
 
 				disFromDrin = 0;
 			}
-
 			//CAMEL TRANSIT
 			else {
 				disFromDrin += currentEdge.getWeight();
