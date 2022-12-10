@@ -37,7 +37,7 @@ public class Graph {
             if (edge.getStartNode() == node
                     || edge.getEndNode() == node)
                 edges.remove(edge);
-        })); //TODO udelat efektivnejsi
+        }));
         adjNodes.remove(node);
         nodesList.set(node.id, null);
     }*/
@@ -131,7 +131,6 @@ public class Graph {
      * @param source pocatecni vrchol
      */
     private void runDijkstraOnNodes(AbstractNode source){
-        //TODO neukladat distance a shortestPath do Node protoze to ma kazda cesta jinak
        // System.out.println(source);
 
         nodesList.forEach(abstractNode -> abstractNode.setDistance(1000000000));

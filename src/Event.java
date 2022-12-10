@@ -14,7 +14,7 @@ public class Event implements Comparable<Event> {
 	 *
 	 * @param time		cas, kdy ma tato udalost nastat
 	 * @param type		typ udalosti
-	 * @param index 	index vrcholu (nebo pozadavku), ke kteremu se event vztahuje
+	 * @param idInfo 	index vrcholu (nebo pozadavku), ke kteremu se event vztahuje
 	 * @param camel	velbloud ke kteremu se event vztahuje
 	 */
 	public Event(double time, EventType type, int idInfo, Camel camel) {
@@ -96,7 +96,7 @@ public class Event implements Comparable<Event> {
 
 		//tasky s mensim indexem ze vstupniho souboru se zpracuji prvni
 		if(o.type == EventType.NewTask && this.type == EventType.NewTask) {
-			return this.index - o.index;
+			return this.idInfo - o.idInfo;
 		}
 		
 		return 0;

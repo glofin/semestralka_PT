@@ -6,6 +6,8 @@ public class Main {
 	/** graf reprezentujici mapu */
 	public static Graph graph = Graph.getInstance();
 
+	public static GUI gui = GUI.getInstance();
+
 	/** manager pro zpracovavani pozadavku a dalsich eventu*/
 	private static EventManager manager;
 
@@ -17,7 +19,27 @@ public class Main {
 
 		//NACTENI SOUBORU
 		try {
-			String input = Parser.fileToString("data/centre_small.txt");
+			String input = Parser.fileToString("data/dense_small.txt");
+			setUp(input);
+			//System.out.println(graph.toString());//vypis grafu
+		} catch (IOException e) {//chyba ve vstupnim souboru nebo jeho jmene
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		//ZPRACOVANI POZADAVKU
+		boolean isErrorEvent;
+		do{
+			isErrorEvent = manager.nextEvent();
+		}
+		while(isErrorEvent);
+	}
+
+	public static void start(String fileName) {
+		System.out.println(fileName);
+		//NACTENI SOUBORU
+		try {
+			String input = Parser.fileToString(fileName);
 			setUp(input);
 			//System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {//chyba ve vstupnim souboru nebo jeho jmene
