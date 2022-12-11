@@ -329,7 +329,7 @@ public class EventManager {
 	}
 
 	private void printOutput(String output) {
-		GUI.addToOutputGUI(output);
+		//GUI.getInstance().addToOutputGUI(output);
 		System.out.print(output);
 	}
 	

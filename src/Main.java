@@ -2,14 +2,29 @@ import java.io.IOException;
 import java.util.*;
 
 public class Main {
+	private static Main messenger;
 
 	/** graf reprezentujici mapu */
 	public static Graph graph = Graph.getInstance();
 
+	private static double waitTimeMsMin = 0;
+	private static double waitTimeMsMax = 1000;
+	private static double waitTimeMs = waitTimeMsMax / 2;
+
 	public static GUI gui = GUI.getInstance();
+
+	public static int i = 0;
 
 	/** manager pro zpracovavani pozadavku a dalsich eventu*/
 	private static EventManager manager;
+	public static Main getInstance(){
+		if(messenger==null) {
+			messenger = new Main();
+		}
+		return messenger;
+	}
+
+	private void Main(){};
 
 	/**
 	 * metoda precte soubor z fileName a nastaviho do datovych struktur
@@ -36,7 +51,7 @@ public class Main {
 	}
 
 	public static void start(String fileName) {
-		System.out.println(fileName);
+		//System.out.println(fileName);
 		//NACTENI SOUBORU
 		try {
 			String input = Parser.fileToString(fileName);
@@ -46,13 +61,40 @@ public class Main {
 			e.printStackTrace();
 			System.exit(0);
 		}
+		/*int i = 0;
+		while (i!=1000000){
+			i++;
+			System.out.println(i);
+			//GUI.stopController();
+			gui.addToOutputGUI(i + "\n");
+		}*/
 
 		//ZPRACOVANI POZADAVKU
 		boolean isErrorEvent;
 		do{
+			try {
+				Thread.sleep((long) waitTimeMs);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
 			isErrorEvent = manager.nextEvent();
 		}
 		while(isErrorEvent);
+
+
+	}
+
+	public static void start2() {
+		while (true) {
+			i++;
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+			System.out.println(i);
+			GUI.getInstance().addToOutputGUI(i + "\n");
+		}
 	}
 
 	/**
@@ -106,4 +148,12 @@ public class Main {
 		
 	}
 
+	public static void changeSpeed(double speedValue, double speedMin, double speedMax) {
+		double convertedSpeedValue = speedValue / (speedMax - speedMin + 1);
+
+		double finalWaitTime = ((1 - convertedSpeedValue) * (waitTimeMsMax - waitTimeMsMin)) + waitTimeMsMin;
+
+		waitTimeMs = finalWaitTime;
+		System.out.println(waitTimeMs);
+	}
 }

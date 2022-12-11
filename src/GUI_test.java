@@ -1,15 +1,17 @@
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.AdjustmentListener;
-import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Date;
 import java.util.Hashtable;
 
 import static java.awt.Component.LEFT_ALIGNMENT;
 
-class GUI {
+class GUI_test{
 
-    private static GUI messenger;
+    private static GUI_test messenger;
     private static JTextArea outputTA;
     private static JScrollPane outputSP;
 
@@ -23,11 +25,11 @@ class GUI {
 
     private StringBuilder outputTAStrBui = new StringBuilder();
 
-    private GUI(){};
+    private GUI_test(){};
 
-    public static GUI getInstance(){
+    public static GUI_test getInstance(){
         if(messenger==null) {
-            messenger = new GUI();
+            messenger = new GUI_test();
         }
         return messenger;
     }
@@ -45,12 +47,25 @@ class GUI {
     }*/
 
     public static void main(String[] args) {
-        frame = new JFrame("Velbloud Planner");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setUp(frame);
-        //Main.start("data/tutorial.txt");
-        //Main.start2();
+        SwingUtilities.invokeLater(() -> {
+            frame = new JFrame("Velbloud Planner");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setUp(frame);
+
+            PrintStream printStream = new PrintStream(new CustomOutputStream(outputTA));
+            PrintStream standardOut = System.out;
+
+            // re-assigns standard output stream and error output stream
+            System.setOut(printStream);
+            System.setErr(printStream);
+            //Main.start("data/tutorial.txt");
+            //Main.start2();
+        });
+
+
     }
+
+
 
     private static void setUp(JFrame frame) {
 
@@ -79,7 +94,7 @@ class GUI {
         Box debuggerButtonsBH = Box.createHorizontalBox();
 
         JButton stop = new JButton("Pozastavit");
-        stop.addActionListener(e -> stopController());
+        stop.addActionListener(e -> printLog());
         JButton previeusStep = new JButton("Krok zpět");
         JButton nextStep = new JButton("Krok dopředu");
         JButton toEnd = new JButton("Doběhnout dokonce");
@@ -145,6 +160,15 @@ class GUI {
         frame.getContentPane().add(BorderLayout.CENTER, panel);
         frame.setVisible(true);
     }
+    public static void printLog() {
+        Thread thread = new Thread(() -> {
+            while (true) {
+                Main.start(defaultFilePath);
+            }
+        });
+        thread.start();
+    }
+
     static int i = 0;
     public static void stopController() {
         TestGUI.start();
@@ -228,4 +252,27 @@ class GUI {
         //scrollbar.setValue(scrollbar.getMaximum()/2);
     }
 
+}
+
+
+
+/**
+ * This class extends from OutputStream to redirect output to a JTextArrea
+ * @author www.codejava.net
+ *
+ */
+ class CustomOutputStream extends OutputStream {
+    private JTextArea textArea;
+
+    public CustomOutputStream(JTextArea textArea) {
+        this.textArea = textArea;
+    }
+
+    @Override
+    public void write(int b) {
+        // redirects data to the text area
+        textArea.append(String.valueOf((char)b));
+        // scrolls the text area to the end of data
+        textArea.setCaretPosition(textArea.getDocument().getLength());
+    }
 }
