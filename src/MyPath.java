@@ -58,6 +58,9 @@ public class MyPath implements Comparable<MyPath>{
 		} else if (o.getFullDistance() < this.getFullDistance()) {
 			return 1;
 		}
-		return 0;
+		if(super.equals(o)) {
+			return 0;
+		}
+		return 1;
 	}
 }

@@ -141,7 +141,10 @@ public class Camel implements Comparable<Camel> {
 		} else if (o.maxDistance < this.maxDistance) {
 			return -1;
 		}
-		return 0;
+		if(super.equals(o)) {
+			return 0;
+		}
+		return 1;
 	}
 	
 }

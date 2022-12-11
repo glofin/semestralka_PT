@@ -5,6 +5,12 @@ public class Task {
 	int basketCount;
 	double deadline;
 	
+	/** Cas, kdy byl pozadavek splnen */
+	public double finishTime;
+	
+	/** velbloud, ktery pozadavek splnil */
+	public Camel finishCamel;
+	
 	/**
 	 * @param arrivalTime	cas prichodu pozadavku
 	 * @param idOaza			oaza, do ktere se ma dorucovat

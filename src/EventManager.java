@@ -116,7 +116,8 @@ public class EventManager {
 								e.camel.task.basketCount,
 				Math.round(finishedTime),
 				Math.round(e.camel.task.deadline - finishedTime)));
-		
+		e.camel.task.finishTime = finishedTime;
+		e.camel.task.finishCamel = e.camel;
 	}
 
 
