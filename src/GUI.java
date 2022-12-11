@@ -3,12 +3,16 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.AdjustmentListener;
 import java.io.File;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Hashtable;
 
 import static java.awt.Component.LEFT_ALIGNMENT;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 class GUI {
 
+    private static Box debuggerButtonsBH;
     private static GUI messenger;
     private static JTextArea outputTA;
     private static JScrollPane outputSP;
@@ -20,6 +24,7 @@ class GUI {
     private static String defaultFilePath = "data/tutorial.txt";
 
     private static JFrame frame;
+    private static Box taskButtonsBH;
 
     private StringBuilder outputTAStrBui = new StringBuilder();
 
@@ -45,12 +50,21 @@ class GUI {
     }*/
 
     public static void main(String[] args) {
-        frame = new JFrame("Velbloud Planner");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setUp(frame);
-        //Main.start("data/tutorial.txt");
-        //Main.start2();
+        SwingUtilities.invokeLater(() -> {
+            frame = new JFrame("Velbloud Planner");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setUp(frame);
+
+            PrintStream printStream = new PrintStream(new CustomOutputStream(outputTA));
+            PrintStream standardOut = System.out;
+
+
+            System.setOut(printStream);
+            System.setErr(printStream);
+        });
     }
+
+
 
     private static void setUp(JFrame frame) {
 
@@ -76,39 +90,58 @@ class GUI {
         //Tlacitka
 
         //Debugger Tlacitka
-        Box debuggerButtonsBH = Box.createHorizontalBox();
+        debuggerButtonsBH = Box.createHorizontalBox();
 
-        JButton stop = new JButton("Pozastavit");
-        stop.addActionListener(e -> stopController());
-        JButton previeusStep = new JButton("Krok zpět");
-        JButton nextStep = new JButton("Krok dopředu");
-        JButton toEnd = new JButton("Doběhnout dokonce");
-        JButton showState = new JButton("Aktuální stav");
+        JButton stopBtn = new JButton("Pozastavit");
+        stopBtn.addActionListener(e -> stopBtnController());
 
-        debuggerButtonsBH.add(stop);
-        debuggerButtonsBH.add(previeusStep);
-        debuggerButtonsBH.add(nextStep);
-        debuggerButtonsBH.add(toEnd);
-        debuggerButtonsBH.add(showState);
+        JButton previeusStepBtn = new JButton("Krok zpět");
+        previeusStepBtn.addActionListener(e -> previeusStepBtnController());
+
+        JButton nextStepBtn = new JButton("Krok dopředu");
+        nextStepBtn.addActionListener(e -> nextStepBtnController());
+
+        JButton runToEndBtn = new JButton("Doběhnout dokonce");
+        runToEndBtn.addActionListener(e -> runToEndBtnController());
+
+        JButton showStateBtn = new JButton("Aktuální stav");
+        showStateBtn.addActionListener(e -> showStateBtnController());
+
+        debuggerButtonsBH.add(stopBtn);
+        debuggerButtonsBH.add(previeusStepBtn);
+        debuggerButtonsBH.add(nextStepBtn);
+        debuggerButtonsBH.add(runToEndBtn);
+        debuggerButtonsBH.add(showStateBtn);
+        //tlacitka nefunguji pred importem souboru
+        for (Component component :
+                debuggerButtonsBH.getComponents()) {
+            component.setEnabled(false);
+        }
 
         //Pridat odebrat pozadavek
-        Box taskButtonsBH = Box.createHorizontalBox();
+        taskButtonsBH = Box.createHorizontalBox();
 
-        JButton addNewTask = new JButton("Přidat nový požadavek");
-        JButton deleteTask = new JButton("Smazat požadavek");
+        JButton addNewTaskBtn = new JButton("Přidat nový požadavek");
+        addNewTaskBtn.addActionListener(e -> addNewTaskBtnController());
 
-        taskButtonsBH.add(addNewTask);
-        taskButtonsBH.add(deleteTask);
+        JButton deleteTaskBtn = new JButton("Smazat požadavek");
+        deleteTaskBtn.addActionListener(e -> deleteTaskBtnController());
+
+        taskButtonsBH.add(addNewTaskBtn);
+        taskButtonsBH.add(deleteTaskBtn);
+        //tlacitka nefunguji pred importem souboru
+        for (Component component :
+                taskButtonsBH.getComponents()) {
+            component.setEnabled(false);
+        }
 
         //Rychlost slider
-        JSlider speed = new JSlider(JSlider.HORIZONTAL);
-        speed.setMinimum(1);
-        speed.setMaximum(8);
-        speed.setValue(4);
-        /*speed.setMajorTickSpacing(10);
-        speed.setMinorTickSpacing(1);*/
-        speed.setPaintTicks(true);
-        speed.setPaintLabels(true);
+        JSlider speedSlider = new JSlider(JSlider.HORIZONTAL);
+        speedSlider.setMinimum(1);
+        speedSlider.setMaximum(8);
+        speedSlider.setValue(4);
+        speedSlider.setPaintTicks(true);
+        speedSlider.setPaintLabels(true);
         Hashtable<Integer,JLabel> labelTable = new Hashtable<>();
         labelTable.put(1, new JLabel("0.25") );
         labelTable.put(2, new JLabel("0.5") );
@@ -118,8 +151,8 @@ class GUI {
         labelTable.put(6, new JLabel("1.5") );
         labelTable.put(7, new JLabel("1.75") );
         labelTable.put(8, new JLabel("2") );
-        speed.setLabelTable( labelTable );
-        speed.addChangeListener(e -> speedController(speed));
+        speedSlider.setLabelTable( labelTable );
+        speedSlider.addChangeListener(e -> speedSliderController(speedSlider));
 
         //TextArea pro vypis
         outputTA = new JTextArea();
@@ -131,7 +164,7 @@ class GUI {
         //Komponenty do MainVB
         mainVB.add(debuggerButtonsBH);
         mainVB.add(taskButtonsBH);
-        mainVB.add(speed);
+        mainVB.add(speedSlider);
         mainVB.add(outputSP);
 
         //Komponenty do Panel
@@ -145,49 +178,52 @@ class GUI {
         frame.getContentPane().add(BorderLayout.CENTER, panel);
         frame.setVisible(true);
     }
-    static int i = 0;
-    public static void stopController() {
-        TestGUI.start();
-        /*i++;
-        outputTA.append(i + "\n");*/
+
+    private static void deleteTaskBtnController() {
     }
 
-    public void addToOutputGUI(String output){
-        outputTA.append(output);
-        //outputSP.getVerticalScrollBar().update(outputSP.getVerticalScrollBar().getGraphics());
-        //outputTA.update(outputTA.getGraphics());
-        /*outputSP.getVerticalScrollBar().update(outputSP.getVerticalScrollBar().getGraphics());
-        outputSP.getVerticalScrollBar().repaint();
-        outputSP.update(outputTA.getGraphics());*/
-
-
-
-        //outputSP.getVerticalScrollBar().setValue(outputSP.getVerticalScrollBar().getMaximum());
+    private static void addNewTaskBtnController() {
     }
 
-    public void addToOutputGUI2(String output){
+    public static void stopBtnController() {
+        //Aktivovat Tlacitka Tasku
+        for (Component component :
+                taskButtonsBH.getComponents()) {
+            component.setEnabled(true);
+        }
 
-        outputTA.append(output);
-        //outputSP.getVerticalScrollBar().update(outputSP.getVerticalScrollBar().getGraphics());
-        outputTA.update(outputTA.getGraphics());
-        /*outputSP.getVerticalScrollBar().update(outputSP.getVerticalScrollBar().getGraphics());
-        outputSP.getVerticalScrollBar().repaint();
-        outputSP.update(outputTA.getGraphics());*/
-
-
-
-        //outputSP.getVerticalScrollBar().setValue(outputSP.getVerticalScrollBar().getMaximum());
-    }
-    public void addToOutputGUI3(String output){
-        final String text = outputTAStrBui.toString() + "\n";
-
-        SwingUtilities.invokeLater(() -> outputTA.append(text));
-
-        outputTAStrBui.setLength(0);
-        outputTAStrBui.append(output);
+        Main.stopRunningOutput();
     }
 
-    private static void speedController(JSlider slider) {
+    private static void previeusStepBtnController() {
+        Main.previusStepEvent();
+    }
+
+    private static void nextStepBtnController() {
+        Main.nextStepEvent();
+    }
+
+    private static void runToEndBtnController() {
+        //Dektivovat Tlacitka Tasku
+        for (Component component :
+                taskButtonsBH.getComponents()) {
+            component.setEnabled(false);
+        }
+
+        Thread thread = new Thread(() -> {Main.runToEnd();});
+        thread.start();
+    }
+
+    private static void showStateBtnController() {
+        showMessageDialog(null, Main.getAppReport(), "Aktuální stav přepravy", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private static void startMain(String filePath) {
+        Thread thread = new Thread(() -> Main.start(filePath));
+        thread.start();
+    }
+
+    private static void speedSliderController(JSlider slider) {
         double sliderMin = slider.getMinimum();
         double sliderMax = slider.getMaximum();
         double sliderValue = slider.getValue();
@@ -195,7 +231,18 @@ class GUI {
     }
 
     private static void importMapController() {
-        /*JFileChooser fileChooser = new JFileChooser();
+        //TODO opakovane zadani souboru hazi chyby
+        //Zaktivovat Tlacitka
+        for (Component component :
+                debuggerButtonsBH.getComponents()) {
+            component.setEnabled(true);
+        }
+        for (Component component :
+                taskButtonsBH.getComponents()) {
+            component.setEnabled(true);
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
 
         fileChooser.setFileFilter(new FileFilter() {
             public String getDescription() {
@@ -209,23 +256,54 @@ class GUI {
                     return f.getName().toLowerCase().endsWith(".txt");
                 }
             }
-        });*/
-        Main.start2();
-        //Main.start(defaultFilePath);
-        /*if (defaultFilePath != null) Main.start(defaultFilePath);
+        });
+
+        if (defaultFilePath != null) startMain(defaultFilePath);
         else {
             fileChooser.showOpenDialog(frame);
             File selectedFile = fileChooser.getSelectedFile();
-            if (selectedFile != null) Main.start(selectedFile.getAbsolutePath());
-        }*/
+            if (selectedFile != null) startMain(selectedFile.getAbsolutePath());
+        }
 
-        /*JScrollBar scrollbar = outputSP.getVerticalScrollBar();
+        JScrollBar scrollbar = outputSP.getVerticalScrollBar();
         //aby bylo mozni scrollovat nahoru
         for( AdjustmentListener al : scrollbar.getAdjustmentListeners()) {
             scrollbar.removeAdjustmentListener(al);
-        }*/
+        }
         //aby vychozi pozice scrollovani nahoru byla nejnizsi
-        //scrollbar.setValue(scrollbar.getMaximum()/2);
+        scrollbar.setValue(scrollbar.getMaximum()/2);
+
+        //Dektivovat Tlacitka
+        /*for (Component component :
+                debuggerButtonsBH.getComponents()) {
+            component.setEnabled(false);
+        }
+        for (Component component :
+                taskButtonsBH.getComponents()) {
+            component.setEnabled(false);
+        }*/
+
     }
 
+}
+
+/**
+ * This class extends from OutputStream to redirect output to a JTextArrea
+ * @author www.codejava.net
+ *
+ */
+class CustomOutputStream extends OutputStream {
+    private JTextArea textArea;
+
+    public CustomOutputStream(JTextArea textArea) {
+        this.textArea = textArea;
+    }
+
+    @Override
+    public void write(int b) {
+        // redirects data to the text area
+        textArea.append(String.valueOf((char)b));
+        // scrolls the text area to the end of data
+        textArea.setCaretPosition(textArea.getDocument().getLength());
+    }
 }

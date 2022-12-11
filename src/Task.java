@@ -23,4 +23,13 @@ public class Task {
 		this.basketCount = basketCount;
 		this.deadline = dealine;
 	}
+
+	@Override
+	public String toString() {
+		return  "Pozadavek - " +
+				"cas zadani:" + arrivalTime +
+				", idOaza: " + idOaza +
+				", pocet kosu: " + basketCount +
+				", deadline cas: " + deadline;
+	}
 }

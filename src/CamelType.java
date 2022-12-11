@@ -47,4 +47,9 @@ public class CamelType {
 	public double getMaxSpeed() {
 		return maxV;
 	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
 }

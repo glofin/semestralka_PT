@@ -184,4 +184,8 @@ public class Graph {
         }
         return minNode;
     }
+
+    public List<AbstractNode> getNodesList() {
+        return nodesList;
+    }
 }

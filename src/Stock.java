@@ -85,11 +85,18 @@ public class Stock extends AbstractNode {
 
 	@Override
 	public String toString() {
-		return "Stock{" +
-				"id=" + id +
-				", x=" + x +
-				", y=" + y +
-				'}';
+		StringBuilder returnStr = new StringBuilder("Sklad - " +
+				", id=" + id +
+				", pocet kosu=" + basketCount +
+				", velbloudi={");
+
+		returnStr.append("\n");
+		for (Camel camel :
+				camelSet) {
+			returnStr.append("    ").append(camel.toString()).append("\n");
+		}
+		returnStr.append("}");
+		return returnStr.toString();
 	}
 
 	/**

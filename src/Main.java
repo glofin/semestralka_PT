@@ -11,9 +11,13 @@ public class Main {
 	private static double waitTimeMsMax = 1000;
 	private static double waitTimeMs = waitTimeMsMax / 2;
 
+	private static int currentEventId = -1;
+
 	public static GUI gui = GUI.getInstance();
 
 	public static int i = 0;
+
+	private static boolean isRunningOutput;
 
 	/** manager pro zpracovavani pozadavku a dalsich eventu*/
 	private static EventManager manager;
@@ -34,7 +38,7 @@ public class Main {
 
 		//NACTENI SOUBORU
 		try {
-			String input = Parser.fileToString("data/dense_small.txt");
+			String input = Parser.fileToString("data/tutorial.txt");
 			setUp(input);
 			//System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {//chyba ve vstupnim souboru nebo jeho jmene
@@ -43,48 +47,94 @@ public class Main {
 		}
 
 		//ZPRACOVANI POZADAVKU
-		boolean isErrorEvent;
+		boolean isNotErrorEvent;
 		do{
-			isErrorEvent = manager.nextEvent();
+			isNotErrorEvent = manager.nextEvent();
 		}
-		while(isErrorEvent);
+		while(isNotErrorEvent);
 	}
 
 	public static void start(String fileName) {
+
 		//System.out.println(fileName);
 		//NACTENI SOUBORU
 		try {
 			String input = Parser.fileToString(fileName);
 			setUp(input);
+			System.out.println("NACTEN SOUBOR: " + fileName + "\n\n");
 			//System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {//chyba ve vstupnim souboru nebo jeho jmene
 			e.printStackTrace();
 			System.exit(0);
 		}
-		/*int i = 0;
-		while (i!=1000000){
-			i++;
-			System.out.println(i);
-			//GUI.stopController();
-			gui.addToOutputGUI(i + "\n");
-		}*/
+	}
 
-		//ZPRACOVANI POZADAVKU
-		boolean isErrorEvent;
+	public static void startNormal(String fileName) {
+
+		//System.out.println(fileName);
+		//NACTENI SOUBORU
+		try {
+			String input = Parser.fileToString(fileName);
+			setUp(input);
+			System.out.println("NACTEN SOUBOR: " + fileName + "\n\n");
+			//System.out.println(graph.toString());//vypis grafu
+		} catch (IOException e) {//chyba ve vstupnim souboru nebo jeho jmene
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		runToEnd();
+	}
+
+	public static boolean nextStepEvent(){
+		//System.out.println("dalsi krok:" + manager.getOutputHistory().size());
+		if (currentEventId<(manager.getOutputHistory().size() - 1) && currentEventId!=-1){
+			//System.out.println("dalsi krok v ifu");
+			currentEventId++;
+			System.out.print(manager.getOutputHistory().get(currentEventId));
+			return true;
+		}
+		//System.out.println("dalsi krok");
+		boolean isNotErrorEvent = manager.nextEvent();
+		if (isNotErrorEvent) {
+			currentEventId++;
+		}
+		return manager.nextEvent();
+	}
+
+	public static void previusStepEvent(){
+		System.out.println("KROK ZPET:");
+		if((currentEventId-1)<0){
+			System.out.println("NELZE KROK ZPET");
+			return;
+		}
+		currentEventId--;
+		System.out.println(manager.getOutputHistory().get(currentEventId));
+	}
+
+	public static void stopRunningOutput(){
+		System.out.println("-------------------------ZASTAVENO-------------------------");
+		isRunningOutput = false;
+	}
+
+	public static boolean runToEnd(){
+		isRunningOutput = true;
+		boolean isNotErrorEvent;
 		do{
+			isNotErrorEvent = nextStepEvent();
+
+			//rychlost vypisu
 			try {
 				Thread.sleep((long) waitTimeMs);
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
-			isErrorEvent = manager.nextEvent();
 		}
-		while(isErrorEvent);
-
-
+		while(isNotErrorEvent && isRunningOutput);
+		return isNotErrorEvent;
 	}
 
-	public static void start2() {
+	/*public static void start2() {
 		while (true) {
 			i++;
 			try {
@@ -93,9 +143,9 @@ public class Main {
 				Thread.currentThread().interrupt();
 			}
 			System.out.println(i);
-			GUI.getInstance().addToOutputGUI(i + "\n");
+			//GUI.getInstance().addToOutputGUI(i + "\n");
 		}
-	}
+	}*/
 
 	/**
 	 * Z atributu vstup nacte data a ulozi je do jednotlivych poli
@@ -154,6 +204,35 @@ public class Main {
 		double finalWaitTime = ((1 - convertedSpeedValue) * (waitTimeMsMax - waitTimeMsMin)) + waitTimeMsMin;
 
 		waitTimeMs = finalWaitTime;
-		System.out.println(waitTimeMs);
+		//System.out.println(waitTimeMs);
+	}
+
+	public static String getAppReport(){
+		StringBuilder returnStr = new StringBuilder();
+
+		returnStr.append("PRACUJE SE NA POZADAVCICH:").append("\n");;
+		for (Task task : manager.getProcessingTasks()) {
+			returnStr.append(task.toString()).append("\n");
+		}
+		returnStr.append("\n");
+
+		returnStr.append("ZPRACOVANE POZADAVKY:").append("\n");;
+		for (Task task : manager.getFinishedTasks()) {
+			returnStr.append(task.toString()).append("\n");;
+		}
+		returnStr.append("\n");
+
+		returnStr.append("STAV SKLADU:").append("\n");
+		for (AbstractNode node: graph.getNodesList()){
+			if (node.getClass() == Oasis.class) continue;
+
+			returnStr.append(node).append("\n");;
+		}
+
+		return returnStr.toString();
+	}
+
+	public static void addEvent(Event event){
+		manager.addEvent(event);
 	}
 }

@@ -146,5 +146,14 @@ public class Camel implements Comparable<Camel> {
 		}
 		return 1;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Velbloud {" +
+				"typ=" + type.toString() +
+				", jmeno='" + name + '\'' +
+				", rychlost=" + speed +
+				", vzdalenost=" + distance +
+				'}';
+	}
 }

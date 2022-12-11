@@ -14,11 +14,18 @@ public class EventManager {
 	 * je tu kvuli ziskani informaci o Tasku, ktery nejsou v Eventu - type:NewTask
 	 */
 	final Task[] tasks;
+
+	private List<Task> finishedTasks = new ArrayList<>();
+	private List<Task> processingTasks = new ArrayList<>();
+
+
 	/** Prioritni fronta nadchazejicich eventu serazena podle toho, kdy maji nastat */
 	final PriorityQueue<Event> events;
 
 	/** graf reprezentujici mapu */
 	public static Graph graph = Graph.getInstance();
+
+	private List<String> outputHistory = new ArrayList<>();
 
 	int numberOftravelingCamels = -1;
 	
@@ -66,7 +73,7 @@ public class EventManager {
 								Math.round(e.time),
 								e.camel.name,
 								e.idInfo + 1));
-		e.camel.home.addCamelToSet(e.camel);
+		e.camel.home.addCamelToSet(e.camel);//todo nefunguje
 	}
 
 
@@ -116,6 +123,11 @@ public class EventManager {
 								e.camel.task.basketCount,
 				Math.round(finishedTime),
 				Math.round(e.camel.task.deadline - finishedTime)));
+
+		//pro vypis stavu prepravy
+		processingTasks.remove(e.camel.task);
+		finishedTasks.add(e.camel.task);
+
 		e.camel.task.finishTime = finishedTime;
 		e.camel.task.finishCamel = e.camel;
 	}
@@ -135,6 +147,9 @@ public class EventManager {
 		//TODO odstranit kose ze skladu, odecist camel ze skladu
 
 		//e.velbloud.home.removeBaskets(e.velbloud.task.basketCount);
+
+		//pro vypis stavu prepravy
+		processingTasks.add(e.camel.task);
 	}
 
 	private void reffilStorage(Event e) {
@@ -332,12 +347,22 @@ public class EventManager {
 	private void printOutput(String output) {
 		//GUI.getInstance().addToOutputGUI(output);
 		System.out.print(output);
+		outputHistory.add(output);
 	}
-	
-	
-	
-	
-	
-	
 
+	public void addEvent(Event event){
+		events.add(event);
+	}
+
+	public List<String> getOutputHistory() {
+		return outputHistory;
+	}
+
+	public List<Task> getFinishedTasks() {
+		return finishedTasks;
+	}
+
+	public List<Task> getProcessingTasks() {
+		return processingTasks;
+	}
 }
