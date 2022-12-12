@@ -4,12 +4,19 @@
 public class CamelType {
 	
 	final String name;
+	/** minimalni rychlost*/
 	final double minV;
+	/** maximalni rychlost*/
 	final double maxV;
+	/** minimalni vzdalenost co ujde velbloud bez napiti*/
 	final double minD;
+	/** maximalni vzdalenost co ujde velbloud bez napiti*/
 	final double maxD;
+	/**jak dlouho velbloud pije*/
 	final double drinkTime;
+	/**maximum kosu co velbloud unese*/
 	final int maxLoad;
+	/** pomer vyskytu*/
 	final double chance;
 	
 	/** Pocet vygenerovanych velbloudu tohoto druhu */

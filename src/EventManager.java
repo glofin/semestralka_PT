@@ -19,18 +19,25 @@ public class EventManager {
 	
 	/** graf reprezentujici mapu */
 	public static Graph graph = Graph.getInstance();
-
+	/** pole tasku, ktere nemeli dostatek kosu ve skladu a cekaji na
+	 * vygenerovani kosu odkazuje na ne id v Evene.idInfo*/
 	private final List<DelayedTask> delayedTasks = new ArrayList<>();
-
+	/**Dokoncene tasky pro Aktualni stav prepravy v GUI*/
 	private final List<Task> finishedTasks = new ArrayList<>();
+	/**Dokoncene tasky a jejich velbloudi dorazili domu
+	 * pro ukonceni generovani kosu skladu*/
 	private final List<Task> finishedTasksAndCamelsHome = new ArrayList<>();
+	/**Zpracovavane tasky pro Aktualni stav prepravy v GUI*/
 	private final List<Task> processingTasks = new ArrayList<>();
 
 
 	/** Prioritni fronta nadchazejicich eventu serazena podle toho, kdy maji nastat */
 	private final PriorityQueue<Event> events;
-
+	/** Zaznam outputu pro krokovani zpet v GUI*/
 	private final List<String> outputHistory = new ArrayList<>();
+
+	/** aktualni zpracovavany Event*/
+	private Event currentEvent;
 	
 	/**
 	 * Vytvori novou instance tridy EventManager
@@ -56,6 +63,8 @@ public class EventManager {
 		if(finishedTasksAndCamelsHome.size()>=tasks.length){return false;}
 
 		Event e = events.poll();
+
+		currentEvent = e;
 
 		switch (Objects.requireNonNull(e).type) {
 			case StorageRefill -> reffilStorage(e);
@@ -85,7 +94,10 @@ public class EventManager {
 
 	/*--------------------------------------------------------------------------------------------------------------*/
 
-
+	/**
+	 * obslouzeni eventu velbloud dorazil domu
+	 * @param e event
+	 */
 	private void camelHome(Event e) {
 		assert e.type != EventType.CamelHome : "Wrong EventType";
 
@@ -100,7 +112,10 @@ public class EventManager {
 		}
 	}
 
-
+	/**
+	 * obslouzeni eventu velbloud prochazi jinym vrcholem
+	 * @param e event
+	 */
 	private void camelTransit(Event e) {
 		assert e.type != EventType.CamelTransit : "Wrong EventType";
 
@@ -113,7 +128,10 @@ public class EventManager {
 
 	}
 
-
+	/**
+	 * obslouzeni eventu velbloud pije
+	 * @param e event
+	 */
 	private void cameldrinks(Event e) {
 		assert e.type != EventType.CamelDrinks : "Wrong EventType";
 
@@ -135,7 +153,10 @@ public class EventManager {
 		
 	} 
 
-
+	/**
+	 * obslouzeni eventu velbloud dorazil do cilove oazy
+	 * @param e event
+	 */
 	private void camelFinished(Event e) {
 		assert e.type != EventType.CamelFinished : "Wrong EventType";
 
@@ -158,6 +179,10 @@ public class EventManager {
 	}
 
 
+	/**
+	 * obslouzeni eventu velbloud vyrazil na cestu
+	 * @param e event
+	 */
 	private void camelDeparting(Event e) {
 		assert e.type != EventType.CamelDeparting : "Wrong EventType";
 
@@ -174,7 +199,11 @@ public class EventManager {
 		//pro vypis stavu prepravy
 		processingTasks.add(e.camel.task);
 	}
-	//TODO nody na stejnem miste nefunguje dijkstra
+
+	/**
+	 * obslouzeni eventu doplneni kosu po casovem intervalu na sklad
+	 * @param e event
+	 */
 	private void reffilStorage(Event e) {
 		assert e.type != EventType.StorageRefill : "Wrong EventType";
 
@@ -186,7 +215,10 @@ public class EventManager {
 		events.add(new Event(e.time + refill.basketMakingTime, EventType.StorageRefill, e.idInfo));
 	}
 
-
+	/**
+	 * obslouzeni eventu kdyz nelze obslouzit Pozadavek
+	 * @param e event
+	 */
 	private void errorTask(Event e) {
 		assert e.type != EventType.ErrorTask : "Wrong EventType";
 
@@ -196,6 +228,11 @@ public class EventManager {
 							));
 	}
 
+	/**
+	 * obslouzeni eventu kdyz se muze vykonat task co
+	 * cekal na doplneni kosu ve skladu
+	 * @param event event
+	 */
 	private void delayedTask(Event event){
 		DelayedTask currentDelayedTask = delayedTasks.get(event.idInfo);
 		MyPath currentPath = currentDelayedTask.path;
@@ -361,6 +398,11 @@ public class EventManager {
 		return null;
 	}
 
+	/**
+	 * Metoda najde velblouda, ktery zvladne cestu
+	 * @param currentPath cesta
+	 * @return velbloud
+	 */
 	private Camel findCamelforPath(MyPath currentPath) {
 		//PROJIT JESTLI SKLAD NEMA VELBLOUDA CO TO ZVLADNE
 		Stock startStock = currentPath.getStartStock();
@@ -372,6 +414,11 @@ public class EventManager {
 		return generateCamel(currentPath);
 	}
 
+	/**
+	 * Metoda vygeneruje velbloudy dokud jeden nezvladne cestu
+	 * @param currentPath cesta
+	 * @return vygenerovany velbloud co zvladne cestu
+	 */
 	private Camel generateCamel(MyPath currentPath){
 		Camel selectedCamel;
 
@@ -391,6 +438,11 @@ public class EventManager {
 
 	/*------------------------------------------------------------------------------------------------------------*/
 
+	/**
+	 * Metoda vypocte cas, pro nalozeni kosu
+	 * @param camel velbloud na ktereho se nakladaji kose
+	 * @return cas pro nalozeni kosu
+	 */
 	private double basketsManipulationTime(Camel camel){
 		return (camel.home.loadingTime * camel.getCarryBasketsOnTask());
 	}
@@ -406,15 +458,6 @@ public class EventManager {
 		double travellingTime = path.getFullDistance() / camel.getSpeed();
 		int idStock = path.getStartStock().getId();
 		double basketManipTime = basketsManipulationTime(camel);
-
-		/*int busketCntStock = path.getStartStock().getBasketCount();
-		if (busketCntStock < basketCount){
-			int difference = basketCount - busketCntStock;
-			for (Event event :
-					events) {
-				if (event.type == EventType.StorageRefill)
-			}
-		}*/
 
 		//CAMEL DEPARTING
 		addToEventscheckDeadline(
@@ -495,6 +538,13 @@ public class EventManager {
 
 	}
 
+	/**
+	 * Kontrola pri pridavani eventu z planEventsforCamel
+	 * jestli nejsou pres deadline tasku
+	 * @param addEvent event co se pridava do events
+	 * @param events prioritni fronta do ktere se pridava event
+	 * @param task obslouzovany pozadavek
+	 */
 	private void addToEventscheckDeadline(Event addEvent, PriorityQueue<Event> events, Task task){
 		if (addEvent.time >= task.deadline) {
 			//System.out.println("addToEventscheckDeadline error v podmince");
@@ -506,15 +556,16 @@ public class EventManager {
 		}
 	}
 
+	/**
+	 * Metoda vypisuje zpravy z eventu do vypisu
+	 * a uklada historii vypisu do outputHistory
+	 * @param output vypisovany text
+	 */
 	private void printOutput(String output) {
 		//GUI.getInstance().addToOutputGUI(output);
 		System.out.print(output);
 		outputHistory.add(output);
 	}
-
-	/*public void addEvent(Event event){
-		events.add(event);
-	}*/
 
 	public List<String> getOutputHistory() {
 		return outputHistory;
@@ -527,8 +578,4 @@ public class EventManager {
 	public List<Task> getProcessingTasks() {
 		return processingTasks;
 	}
-
-	/*public Event getCurrentEvent() {
-		return currentEvent;
-	}*/
 }

@@ -1,10 +1,16 @@
 import java.util.Arrays;
 
+/**
+ * Trida reprezentujici cestu, kterou najde dijsktra v grafu
+ */
 public class MyPath implements Comparable<MyPath>{
+    /**Pole hran na ceste*/
     private final Edge[] edgesArr;
 
+    /**Vzdalenost cele cesty*/
     private final double fullDistance;
 
+    /**maximalni delka hrany na ceste*/
     private final double maxDistance;
 
     public MyPath(Edge[] edgesArr) {
@@ -14,6 +20,11 @@ public class MyPath implements Comparable<MyPath>{
         maxDistance = distances[1];
     }
 
+    /**
+     * Spocita nejdelsi hranu na ceste a secte vzdalenost cele cesty
+     * @return 0 - vzdalenost cele cesty
+     *          1 - nejdelsi hrana na ceste
+     */
     private double[] computeFullDistanceAndFindMax() {
         double count = 0;
         double max = -1;

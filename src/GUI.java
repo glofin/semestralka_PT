@@ -10,25 +10,41 @@ import java.util.Hashtable;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ * Trida vytvari GUI pro aplikaci
+ */
 class GUI {
 
+    /** tlacitka pro krokovani*/
     private static Box debuggerButtonsBH;
     private static GUI messenger;
+    /**vypis z eventu*/
     private static JTextArea outputTA;
+    /**scrolovaci pane kde je vypis eventu*/
     private static JScrollPane outputSP;
-
+    /** listener posouvajici scroll pane dolu pri vypisu dat*/
     private static AdjustmentListener outputScrolling = e -> e.getAdjustable().setValue(e.getAdjustable().getMaximum());
 
-//    private static boolean opened = true;
+    private static String defaultFilePath;
 
-    private static String defaultFilePath = "data/tutorial.txt";
-
+    /** hlavni okno GUI*/
     private static JFrame frame;
-    //private static Box taskButtonsBH;
+    /**tlacitko pro zobrazeni stavu prepravy*/
     private static JButton showStateBtn;
+    /**tlacitko pro krokovani zpet*/
+    private static JButton previeusStepBtn;
+    /**tlacitko pro krokovani dopredu*/
+    private static JButton nextStepBtn;
+    /**tlacitko pro dobehnuti dokonce*/
+    private static JButton runToEndBtn;
+    /**tlacitko pro zastavni*/
+    private static JButton stopBtn;
+    /**slider pro rychlost vypisu*/
+    private static JSlider speedSlider;
 
- //   private StringBuilder outputTAStrBui = new StringBuilder();
-
+    /**
+     * Jedinacek konstruktor
+     */
     private GUI(){};
 
     public static GUI getInstance(){
@@ -38,18 +54,9 @@ class GUI {
         return messenger;
     }
 
-    /*public static void start(){
-        JFrame frame = new JFrame("Velbloud z Main");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent event) {
-                exitGUI(frame);
-            }
-        });
-        setUp(frame);
-    }*/
-
+    /**
+     * Hlavni metoda otevre hlavni okno
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             frame = new JFrame("Velbloud Planner");
@@ -66,7 +73,9 @@ class GUI {
     }
 
 
-
+    /**
+     * Nastavi kompnenty ve frame
+     */
     private static void setUp(JFrame frame) {
 
         //Frame
@@ -93,16 +102,17 @@ class GUI {
         //Debugger Tlacitka
         debuggerButtonsBH = Box.createHorizontalBox();
 
-        JButton stopBtn = new JButton("Pozastavit");
+        stopBtn = new JButton("Pozastavit");
         stopBtn.addActionListener(e -> stopBtnController());
+        stopBtn.setEnabled(false);
 
-        JButton previeusStepBtn = new JButton("Krok zpět");
+        previeusStepBtn = new JButton("Krok zpět");
         previeusStepBtn.addActionListener(e -> previeusStepBtnController());
 
-        JButton nextStepBtn = new JButton("Krok dopředu");
+        nextStepBtn = new JButton("Krok dopředu");
         nextStepBtn.addActionListener(e -> nextStepBtnController());
 
-        JButton runToEndBtn = new JButton("Doběhnout dokonce");
+        runToEndBtn = new JButton("Doběhnout dokonce");
         runToEndBtn.addActionListener(e -> runToEndBtnController());
 
         showStateBtn = new JButton("Aktuální stav");
@@ -118,23 +128,6 @@ class GUI {
                 debuggerButtonsBH.getComponents()) {
             component.setEnabled(false);
         }
-
-        //Pridat odebrat pozadavek
-        /*taskButtonsBH = Box.createHorizontalBox();
-
-        JButton addNewTaskBtn = new JButton("Přidat nový požadavek");
-        addNewTaskBtn.addActionListener(e -> addNewTaskBtnController());
-
-        JButton deleteTaskBtn = new JButton("Smazat požadavek");
-        deleteTaskBtn.addActionListener(e -> deleteTaskBtnController());
-
-        taskButtonsBH.add(addNewTaskBtn);
-        taskButtonsBH.add(deleteTaskBtn);
-        //tlacitka nefunguji pred importem souboru
-        for (Component component :
-                taskButtonsBH.getComponents()) {
-            component.setEnabled(false);
-        }*/
 
         //Rychlost slider
         JSlider speedSlider = setUpSlider();
@@ -185,115 +178,72 @@ class GUI {
 		return speedSlider;
     }
 
-    /*private static void addNewTaskBtnController() {
-        JFrame newTaskFrame = new JFrame("Přidat nový požadavek");
-        newTaskFrame.setVisible(true);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-
-        Box mainVB = Box.createVerticalBox();
-
-
-        NumberFormat format = NumberFormat.getInstance();
-
-        NumberFormatter formatter = new NumberFormatter(format);
-        formatter.setValueClass(Integer.class);
-        formatter.setMinimum(0);
-        formatter.setMaximum(Integer.MAX_VALUE);
-        formatter.setAllowsInvalid(false);
-        // If you want the value to be committed on each keystroke instead of focus lost
-        //formatter.setCommitsOnValidEdit(true);
-
-
-        JLabel idOasisLabel = new JLabel("Zadejte id oázy:");
-        NumberFormatter formatterIdOasis = new NumberFormatter(format);
-        formatterIdOasis.setValueClass(Integer.class);
-        formatterIdOasis.setMinimum(0);
-        formatterIdOasis.setMaximum(Main.getOasisMaxId());
-        formatterIdOasis.setAllowsInvalid(false);
-        JFormattedTextField idOasisTF = new JFormattedTextField(formatterIdOasis);
-
-        JLabel bascketCountLabel = new JLabel("Zadejte počet košů:");
-        JFormattedTextField bascketCounTF = new JFormattedTextField(formatter);
-
-        JLabel dedalineLabel = new JLabel("Deadline čas:");
-        JFormattedTextField deadlineTF = new JFormattedTextField(formatter);
-
-        JButton addEventBtn = new JButton("Přidat Požadavek");
-        addEventBtn.addActionListener(e ->
-                addEventBtnController(
-                        newTaskFrame,
-                        idOasisTF.getValue(),
-                        bascketCounTF.getValue(),
-                        deadlineTF.getValue()
-                        ));
-
-        //mainVB add Components
-        mainVB.add(idOasisLabel);
-        mainVB.add(idOasisTF);
-
-        mainVB.add(bascketCountLabel);
-        mainVB.add(bascketCounTF);
-
-        mainVB.add(dedalineLabel);
-        mainVB.add(deadlineTF);
-
-        panel.add(mainVB);
-        newTaskFrame.add(panel);
-        newTaskFrame.pack();
-        //id oazy
-        //pocet kosu
-        //deadline
-        //cas pridani ziskat auto
-    }*/
-
-    /*private static void addEventBtnController(JFrame frame, int idOasis, int bascketCount, int deadline) {
-        Main.addTaskEvent(new Task());
-
-        frame.dispose();
-    }*/
-
+    /**
+     * Akce pri kliknuti na zastaveni
+     */
     public static void stopBtnController() {
-        //Aktivovat Tlacitka Tasku
-        /*for (Component component :
-                taskButtonsBH.getComponents()) {
-            component.setEnabled(true);
-        }*/
 
         Main.stopRunningOutput();
+        //Deaktivovat tlactka kroku kdyz jede dopredu
+        previeusStepBtn.setEnabled(true);
+        nextStepBtn.setEnabled(true);
+        runToEndBtn.setEnabled(true);
+        stopBtn.setEnabled(false);
     }
 
+    /**
+     * Akce pri kliknuti na krok zpet
+     */
     private static void previeusStepBtnController() {
         showStateBtn.setEnabled(false);
         Main.previusStepEvent();
     }
 
+    /**
+     * Akce pri kliknuti na krok dopredu
+     */
     private static void nextStepBtnController() {
         if (Main.nextStepEvent()[1]) {showStateBtn.setEnabled(true);}
     }
 
+    /**
+     * Akce pri kliknuti na dobehnout dokonce
+     */
     private static void runToEndBtnController() {
-        //Dektivovat Tlacitka Tasku
-        /*for (Component component :
-                taskButtonsBH.getComponents()) {
-            component.setEnabled(false);
-        }*/
+        //nastaveni rychlosti outputu podle slideru
+        speedSliderController(speedSlider);
 
-        Thread thread = new Thread(() -> {Main.runToEnd();});
+        Thread thread = new Thread(Main::runToEnd);
         thread.start();
+
+        //Deaktivovat tlactka kroku kdyz jede dopredu
+        previeusStepBtn.setEnabled(false);
+        nextStepBtn.setEnabled(false);
+        runToEndBtn.setEnabled(false);
+        stopBtn.setEnabled(true);
     }
 
+    /**
+     * Zobrazi okno s aktualnim stavem prepravy
+     */
     private static void showStateBtnController() {
         showMessageDialog(null, Main.getAppReport(), "Aktuální stav přepravy", JOptionPane.PLAIN_MESSAGE);
     }
 
+    /**
+     * Zavola start z main, ktere nastartuje aplikace
+     * @param filePath cesta k souboru mapy
+     */
     private static void startMain(String filePath) {
         Thread thread = new Thread(() -> Main.start(filePath));
         thread.start();
     }
 
+    /**
+     * Ovladani rychlosti vypisu - pri zmene hodnoty
+     * @param slider slider pro ovlivnovani hodnoty
+     */
     private static void speedSliderController(JSlider slider) {
         double sliderMin = slider.getMinimum();
         double sliderMax = slider.getMaximum();
@@ -301,17 +251,23 @@ class GUI {
         Main.changeSpeed(sliderValue, sliderMin, sliderMax);
     }
 
+    /**
+     * Pri kliknuti na importovat soubor
+     * Nacte soubor z file okna
+     */
     private static void importMapController() {
-        //TODO opakovane zadani souboru hazi chyby
+
+
+
+        System.out.println();
+        System.out.println();
+
         //Zaktivovat Tlacitka
         for (Component component :
                 debuggerButtonsBH.getComponents()) {
             component.setEnabled(true);
         }
-        /*for (Component component :
-                taskButtonsBH.getComponents()) {
-            component.setEnabled(true);
-        }*/
+        stopBtn.setEnabled(false);
 
         JFileChooser fileChooser = new JFileChooser();
 
@@ -344,23 +300,12 @@ class GUI {
         //aby vychozi pozice scrollovani nahoru byla nejnizsi
         scrollbar.setValue(scrollbar.getMaximum()/2);
 
-        //Dektivovat Tlacitka
-       /* for (Component component :
-                debuggerButtonsBH.getComponents()) {
-            component.setEnabled(false);
-        }*/
-        /*for (Component component :
-                taskButtonsBH.getComponents()) {
-            component.setEnabled(false);
-        }*/
-
     }
 
 }
 
 /**
- * This class extends from OutputStream to redirect output to a JTextArrea
- * @author www.codejava.net
+ * Trida pro vypis z konzole do outputTA
  *
  */
 class CustomOutputStream extends OutputStream {
@@ -372,9 +317,7 @@ class CustomOutputStream extends OutputStream {
 
     @Override
     public void write(int b) {
-        // redirects data to the text area
         textArea.append(String.valueOf((char)b));
-        // scrolls the text area to the end of data
         textArea.setCaretPosition(textArea.getDocument().getLength());
     }
 }

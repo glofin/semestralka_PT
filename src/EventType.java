@@ -1,4 +1,6 @@
-
+/**
+ * Trida definujici typy Eventu
+ */
 public enum EventType {
 
 	/** Vypis error kdyz se nepodari task */
