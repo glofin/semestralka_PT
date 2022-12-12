@@ -18,6 +18,14 @@ public class Graph {
 
     private Graph(){}
 
+    /**
+     * Vycisti graf pro novou mapu
+     */
+    public void clearGraph(){
+        adjNodes.clear();
+        nodesList.clear();
+    }
+
     /** Jedinace dostat graf */
     public static Graph getInstance(){
         if(messenger==null) {
@@ -26,45 +34,32 @@ public class Graph {
         return messenger;
     }
 
+    /**
+     * Prida vrcholy do grafu
+     * @param node vrchol pro pridani do grafu
+     */
     void addNode(AbstractNode node) {
         adjNodes.putIfAbsent(node, new ArrayList<>());
         if (nodesList.size() != node.id) {System.out.println("Chyba pri pridani vrcholu ve tride Graph addNode()");}
         nodesList.add(node);
     }
 
-    /*void removeNode(AbstractNode node){
-        adjNodes.values().forEach(edges -> edges.forEach(edge -> {
-            if (edge.getStartNode() == node
-                    || edge.getEndNode() == node)
-                edges.remove(edge);
-        }));
-        adjNodes.remove(node);
-        nodesList.set(node.id, null);
-    }*/
-
+    /**
+     * Prida hrany do grafu
+     * @param node1 vrchol hrany
+     * @param node2 vrhcol hrany
+     */
     void addEdge(AbstractNode node1, AbstractNode node2){
         adjNodes.get(node1).add(new Edge(node1, node2));
         adjNodes.get(node2).add(new Edge(node2, node1));
     }
 
-    /*void removeEdge(Edge edge){
-        AbstractNode node1 = edge.getStartNode();
-        AbstractNode node2 = edge.getEndNode();
-
-        List<Edge> edgesNode1 = adjNodes.get(node1);
-        List<Edge> edgesNode2 = adjNodes.get(node2);
-
-        if (edgesNode1 != null)edgesNode1.remove(edge);
-        if (edgesNode2 != null)edgesNode2.remove(edge);
-    }*/
-
+    /**
+     * Vrati vrchol podle id
+     */
     AbstractNode getNodebyId(int id){
         //TODO predelat
         return nodesList.get(id);
-    }
-
-    List<Edge> getEdgesofNode(AbstractNode node){
-        return adjNodes.get(node);
     }
 
     /**

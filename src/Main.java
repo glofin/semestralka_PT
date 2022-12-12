@@ -4,22 +4,27 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
 
+/**
+ * Trida ktera ovlada spusteni aplikace
+ * a vytvari propojeni mezi GUI a ostatnimi tridami
+ */
 public class Main {
 	private static Main messenger;
 
 	/** graf reprezentujici mapu */
 	public static Graph graph = Graph.getInstance();
 
+	/**minimalni cas cekani pro ovlivnenni rychlosti vypisu*/
 	private static double waitTimeMsMin = 0;
+	/**maximalni cas cekani pro ovlivnenni rychlosti vypisu*/
 	private static double waitTimeMsMax = 1000;
+	/**vychozi cas cekani pro ovlivnenni rychlosti vypisu*/
 	private static double waitTimeMs = waitTimeMsMax / 2;
 
-	private static int currentEventId = -1;
+	/**aktualni id eventu pri krokovani dopredu a zpet*/
+	private static int currentGUIEventId = -1;
 
-	public static GUI gui = GUI.getInstance();
-
-	public static int i = 0;
-
+	/**pro zastaveni vypisu pri kliknuti na tlacitko stop v GUI*/
 	private static boolean isRunningOutput;
 
 	/** manager pro zpracovavani pozadavku a dalsich eventu*/
@@ -39,7 +44,7 @@ public class Main {
 
 		//NACTENI SOUBORU
 		try {
-			String input = Parser.fileToString("data/centre_small.txt");
+			String input = Parser.fileToString("data/tutorial.txt");
 			setUp(input);
 			//System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {//chyba ve vstupnim souboru nebo jeho jmene
@@ -53,7 +58,7 @@ public class Main {
 			isNotErrorEvent = manager.nextEvent();
 		}
 		while(isNotErrorEvent);
-		
+
 		//ZAPIS STATISTIK DO SOUBORU
 		try {
 			makeOutputFile();
@@ -62,7 +67,15 @@ public class Main {
 		}
 	}
 
+	/**
+	 * Stejne jako main jen pro nastartovani z GUI
+	 * @param fileName jmeno souboru kde je mapa
+	 */
 	public static void start(String fileName) {
+		//kdyz se nacita druhy soubor, vycisteni
+		graph.clearGraph();
+		waitTimeMs = waitTimeMsMax / 2;
+		currentGUIEventId = -1;
 
 		//System.out.println(fileName);
 		//NACTENI SOUBORU
@@ -77,38 +90,26 @@ public class Main {
 		}
 	}
 
-	public static void startNormal(String fileName) {
-
-		//System.out.println(fileName);
-		//NACTENI SOUBORU
-		try {
-			String input = Parser.fileToString(fileName);
-			setUp(input);
-			System.out.println("NACTEN SOUBOR: " + fileName + "\n\n");
-			//System.out.println(graph.toString());//vypis grafu
-		} catch (IOException e) {//chyba ve vstupnim souboru nebo jeho jmene
-			e.printStackTrace();
-			System.exit(0);
-		}
-
-		runToEnd();
-	}
-
+	/**
+	 * Dalsi krok pri kliknuti z GUI
+	 * @return 0 - neni to error event
+	 * 			1 - pridavame dalsi krok nevracime se zpet
+	 */
 	public static boolean[] nextStepEvent(){
 		boolean[] rtrBool = new boolean[2];
 		//System.out.println("dalsi krok:" + manager.getOutputHistory().size());
-		if (currentEventId<(manager.getOutputHistory().size() - 1) && currentEventId!=-1){
+		if (currentGUIEventId <(manager.getOutputHistory().size() - 1) && currentGUIEventId !=-1){
 			//System.out.println("dalsi krok v ifu");
-			currentEventId++;
-			System.out.print(manager.getOutputHistory().get(currentEventId));
+			currentGUIEventId++;
+			System.out.print(manager.getOutputHistory().get(currentGUIEventId));
 			rtrBool[0] = true;
 			return rtrBool;
 		}
 		//System.out.println("dalsi krok");
 		boolean isNotErrorEvent = manager.nextEvent();
 		if (isNotErrorEvent) {
-			currentEventId++;
-		} else {
+			currentGUIEventId = manager.getOutputHistory().size() - 1;
+		}else {
 			try {
 				makeOutputFile();
 			} catch (FileNotFoundException e) {
@@ -122,21 +123,30 @@ public class Main {
 		return rtrBool;
 	}
 
+	/**
+	 * Krok zpet kliknuti z GUI
+	 */
 	public static void previusStepEvent(){
 		System.out.println("KROK ZPET:");
-		if((currentEventId-1)<0){
+		if((currentGUIEventId -1)<0){
 			System.out.println("NELZE KROK ZPET");
 			return;
 		}
-		currentEventId--;
-		System.out.println(manager.getOutputHistory().get(currentEventId));
+		currentGUIEventId--;
+		System.out.println(manager.getOutputHistory().get(currentGUIEventId));
 	}
 
+	/**
+	 * Zastaveno kliknuti z GUI
+	 */
 	public static void stopRunningOutput(){
 		System.out.println("-------------------------ZASTAVENO-------------------------");
 		isRunningOutput = false;
 	}
 
+	/**
+	 * Dobehnout dokonce kliknuti z GUI
+	 */
 	public static void runToEnd(){
 		isRunningOutput = true;
 		boolean isNotErrorEvent;
@@ -152,19 +162,6 @@ public class Main {
 		}
 		while(isNotErrorEvent && isRunningOutput);
 	}
-
-	/*public static void start2() {
-		while (true) {
-			i++;
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
-			System.out.println(i);
-			//GUI.getInstance().addToOutputGUI(i + "\n");
-		}
-	}*/
 
 	/**
 	 * Z atributu vstup nacte data a ulozi je do jednotlivych poli
@@ -218,6 +215,13 @@ public class Main {
 		
 	}
 
+	/**
+	 * Zmena rychlosti vypisu z GUI
+	 * prevod na cekaci cas
+	 * @param speedValue vybrana hodnota
+	 * @param speedMin maximalni hodnota
+	 * @param speedMax minimalni hodnota
+	 */
 	public static void changeSpeed(double speedValue, double speedMin, double speedMax) {
 		double convertedSpeedValue = speedValue / (speedMax - speedMin + 1);
 
@@ -227,6 +231,10 @@ public class Main {
 		//System.out.println(waitTimeMs);
 	}
 
+	/**
+	 * Aktualni stav prepravy kliknuti z GUI
+	 * @return String se zpravou
+	 */
 	public static String getAppReport(){
 		StringBuilder returnStr = new StringBuilder();
 
@@ -250,20 +258,6 @@ public class Main {
 		}
 
 		return returnStr.toString();
-	}
-
-	public static int getOasisMaxId() {
-		int count = 0;
-		for (AbstractNode node :
-				graph.getNodesList()) {
-			if (node.getClass()==Stock.class) {continue;}
-			count++;
-		}
-		return count - 1;
-	}
-
-	public static void addTaskEvent(Task task){
-		//manager.addTaskEvent(task);
 	}
 	
 	/**
@@ -289,7 +283,8 @@ public class Main {
 			out += "Jedincu druhu " + typ.name + " vygenerovano celkem: " + typ.count + "\n";
 			}
 		System.out.print(out);
-		
+
+		System.setOut(GUI.getPrintStream());
 	}
 	
 	private static String stockStats() {
@@ -366,7 +361,7 @@ public class Main {
     		}
     	}
     	path += "-> " + node(edgesArr[edgesArr.length-1].getEndNode().id) + "\n";
-    	
+
 		return path;
 	}
 
@@ -377,7 +372,7 @@ public class Main {
 		} else {
 			ret = "Sklad " + (id+1);
 		}
-			
+
 		return ret;
 	}
 

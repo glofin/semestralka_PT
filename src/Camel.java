@@ -33,7 +33,8 @@ public class Camel implements Comparable<Camel> {
  	/** Aktualni pozadavek, ktery tento velbloud vykonava */
  	public Task task = null;
 
-	public int carryBasketsOnTask = 0;
+	 /** Kolik nese velbloud kosu v pozadavku ktery prave plni*/
+	 public int carryBasketsOnTask = 0;
  	
  	/** Archiv vsech cest, na kterych velbloud byl */
  	public Deque<MyPath> paths;
@@ -43,8 +44,10 @@ public class Camel implements Comparable<Camel> {
  	
  	
 
+	 /** maximalni vzdalenost, kterou druh velblouda zvladne pro hledani velblouda na cestu*/
 	 private static double druhMaxDistance;
 
+	/** maximalni rychlost, kterou druh velblouda zvladne pro hledani velblouda na cestu*/
 	 private static double druhMaxSpeed;
 
 
@@ -122,7 +125,7 @@ public class Camel implements Comparable<Camel> {
 		druhMaxDistance = maxDistance;
 		druhMaxSpeed = maxSpeed;
 	}
-	
+
 	public static CamelType[] getCamelTypes() {
 		return types;
 	}

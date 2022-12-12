@@ -1,4 +1,7 @@
-
+/**
+ * Trida vyjadrujici udalost, ktere se nasledne vykonavaji
+ * v EventManageru typy specifikovany v EventType
+ */
 public class Event implements Comparable<Event> {
 	/** cas udalosti */
 	double time;
