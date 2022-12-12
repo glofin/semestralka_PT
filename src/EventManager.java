@@ -15,7 +15,7 @@ public class EventManager {
 	public final Task[] tasks;
 	
 	/** Cas konce uspesne simulace */
-	public double endTime;
+	public double endTime = -1;
 	
 	/** graf reprezentujici mapu */
 	public static Graph graph = Graph.getInstance();
@@ -31,6 +31,8 @@ public class EventManager {
 	private final PriorityQueue<Event> events;
 
 	private final List<String> outputHistory = new ArrayList<>();
+	
+	private int numberOfTravelingCamels = -1;
 	
 	/**
 	 * Vytvori novou instance tridy EventManager
@@ -53,7 +55,7 @@ public class EventManager {
 		//kdyz nejsou eventy
 		if (events.size()<1) {return false;}
 		//kdyz nejsou Tasky
-		if(finishedTasksAndCamelsHome.size()>=tasks.length){return false;}
+		if(endTime > 0){return false;}
 
 		Event e = events.poll();
 
@@ -89,13 +91,14 @@ public class EventManager {
 	private void camelHome(Event e) {
 		assert e.type != EventType.CamelHome : "Wrong EventType";
 
+		numberOfTravelingCamels--;
 		printOutput(String.format(Locale.US, "Cas: %d, Velbloud: %s, Navrat do skladu: %d\n",
 								Math.round(e.time),
 								e.camel.name,
 								e.idInfo + 1));
 		e.camel.home.addCamelToSet(e.camel);
 		finishedTasksAndCamelsHome.add(e.camel.task);
-		if(finishedTasksAndCamelsHome.size() == tasks.length) {
+		if(finishedTasksAndCamelsHome.size() >= tasks.length && numberOfTravelingCamels == 0) {
 			endTime = e.time;
 		}
 	}
@@ -160,7 +163,8 @@ public class EventManager {
 
 	private void camelDeparting(Event e) {
 		assert e.type != EventType.CamelDeparting : "Wrong EventType";
-
+		
+		numberOfTravelingCamels = numberOfTravelingCamels == -1 ? numberOfTravelingCamels +2 : numberOfTravelingCamels +1;
 		printOutput(String.format(Locale.US, "Cas: %d, Velbloud: %s, Sklad %d, Nalozeno kosu: %d, Odchod v %d\n",
 				Math.round(e.time),
 								e.camel.name,
@@ -368,7 +372,8 @@ public class EventManager {
 	private Camel findCamelforPath(MyPath currentPath) {
 		//PROJIT JESTLI SKLAD NEMA VELBLOUDA CO TO ZVLADNE
 		Stock startStock = currentPath.getStartStock();
-		if (startStock.camelSet.first().getMaxDistance()>currentPath.getMaxDistance()){
+		if (!startStock.camelSet.isEmpty() && 
+				startStock.camelSet.first().getMaxDistance()>currentPath.getMaxDistance()){
 			return startStock.camelSet.first();
 		}
 

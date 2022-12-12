@@ -108,6 +108,13 @@ public class Main {
 		boolean isNotErrorEvent = manager.nextEvent();
 		if (isNotErrorEvent) {
 			currentEventId++;
+		} else {
+			try {
+				makeOutputFile();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				System.exit(0);
+			}
 		}
 
 		rtrBool[0] = isNotErrorEvent;
