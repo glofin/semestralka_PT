@@ -89,20 +89,25 @@ public class Main {
 		runToEnd();
 	}
 
-	public static boolean nextStepEvent(){
+	public static boolean[] nextStepEvent(){
+		boolean[] rtrBool = new boolean[2];
 		//System.out.println("dalsi krok:" + manager.getOutputHistory().size());
 		if (currentEventId<(manager.getOutputHistory().size() - 1) && currentEventId!=-1){
 			//System.out.println("dalsi krok v ifu");
 			currentEventId++;
 			System.out.print(manager.getOutputHistory().get(currentEventId));
-			return true;
+			rtrBool[0] = true;
+			return rtrBool;
 		}
 		//System.out.println("dalsi krok");
 		boolean isNotErrorEvent = manager.nextEvent();
 		if (isNotErrorEvent) {
 			currentEventId++;
 		}
-		return manager.nextEvent();
+
+		rtrBool[0] = manager.nextEvent();
+		rtrBool[1] = true;
+		return rtrBool;
 	}
 
 	public static void previusStepEvent(){
@@ -120,11 +125,11 @@ public class Main {
 		isRunningOutput = false;
 	}
 
-	public static boolean runToEnd(){
+	public static void runToEnd(){
 		isRunningOutput = true;
 		boolean isNotErrorEvent;
 		do{
-			isNotErrorEvent = nextStepEvent();
+			isNotErrorEvent = nextStepEvent()[0];
 
 			//rychlost vypisu
 			try {
@@ -134,7 +139,6 @@ public class Main {
 			}
 		}
 		while(isNotErrorEvent && isRunningOutput);
-		return isNotErrorEvent;
 	}
 
 	/*public static void start2() {
@@ -235,8 +239,18 @@ public class Main {
 		return returnStr.toString();
 	}
 
-	public static void addEvent(Event event){
-		manager.addEvent(event);
+	public static int getOasisMaxId() {
+		int count = 0;
+		for (AbstractNode node :
+				graph.getNodesList()) {
+			if (node.getClass()==Stock.class) continue;
+			count++;
+		}
+		return count - 1;
+	}
+
+	public static void addTaskEvent(Task task){
+		//manager.addTaskEvent(task);
 	}
 	
 	/**

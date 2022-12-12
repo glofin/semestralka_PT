@@ -1,10 +1,14 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.text.NumberFormat;
 import java.util.Hashtable;
 
 import static java.awt.Component.LEFT_ALIGNMENT;
@@ -24,7 +28,8 @@ class GUI {
     private static String defaultFilePath = "data/tutorial.txt";
 
     private static JFrame frame;
-    private static Box taskButtonsBH;
+    //private static Box taskButtonsBH;
+    private static JButton showStateBtn;
 
     private StringBuilder outputTAStrBui = new StringBuilder();
 
@@ -104,7 +109,7 @@ class GUI {
         JButton runToEndBtn = new JButton("Doběhnout dokonce");
         runToEndBtn.addActionListener(e -> runToEndBtnController());
 
-        JButton showStateBtn = new JButton("Aktuální stav");
+        showStateBtn = new JButton("Aktuální stav");
         showStateBtn.addActionListener(e -> showStateBtnController());
 
         debuggerButtonsBH.add(stopBtn);
@@ -119,7 +124,7 @@ class GUI {
         }
 
         //Pridat odebrat pozadavek
-        taskButtonsBH = Box.createHorizontalBox();
+        /*taskButtonsBH = Box.createHorizontalBox();
 
         JButton addNewTaskBtn = new JButton("Přidat nový požadavek");
         addNewTaskBtn.addActionListener(e -> addNewTaskBtnController());
@@ -133,7 +138,7 @@ class GUI {
         for (Component component :
                 taskButtonsBH.getComponents()) {
             component.setEnabled(false);
-        }
+        }*/
 
         //Rychlost slider
         JSlider speedSlider = new JSlider(JSlider.HORIZONTAL);
@@ -163,7 +168,7 @@ class GUI {
 
         //Komponenty do MainVB
         mainVB.add(debuggerButtonsBH);
-        mainVB.add(taskButtonsBH);
+        //mainVB.add(taskButtonsBH);
         mainVB.add(speedSlider);
         mainVB.add(outputSP);
 
@@ -179,36 +184,101 @@ class GUI {
         frame.setVisible(true);
     }
 
-    private static void deleteTaskBtnController() {
-    }
+    /*private static void addNewTaskBtnController() {
+        JFrame newTaskFrame = new JFrame("Přidat nový požadavek");
+        newTaskFrame.setVisible(true);
 
-    private static void addNewTaskBtnController() {
-    }
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+
+        Box mainVB = Box.createVerticalBox();
+
+
+        NumberFormat format = NumberFormat.getInstance();
+
+        NumberFormatter formatter = new NumberFormatter(format);
+        formatter.setValueClass(Integer.class);
+        formatter.setMinimum(0);
+        formatter.setMaximum(Integer.MAX_VALUE);
+        formatter.setAllowsInvalid(false);
+        // If you want the value to be committed on each keystroke instead of focus lost
+        //formatter.setCommitsOnValidEdit(true);
+
+
+        JLabel idOasisLabel = new JLabel("Zadejte id oázy:");
+        NumberFormatter formatterIdOasis = new NumberFormatter(format);
+        formatterIdOasis.setValueClass(Integer.class);
+        formatterIdOasis.setMinimum(0);
+        formatterIdOasis.setMaximum(Main.getOasisMaxId());
+        formatterIdOasis.setAllowsInvalid(false);
+        JFormattedTextField idOasisTF = new JFormattedTextField(formatterIdOasis);
+
+        JLabel bascketCountLabel = new JLabel("Zadejte počet košů:");
+        JFormattedTextField bascketCounTF = new JFormattedTextField(formatter);
+
+        JLabel dedalineLabel = new JLabel("Deadline čas:");
+        JFormattedTextField deadlineTF = new JFormattedTextField(formatter);
+
+        JButton addEventBtn = new JButton("Přidat Požadavek");
+        addEventBtn.addActionListener(e ->
+                addEventBtnController(
+                        newTaskFrame,
+                        idOasisTF.getValue(),
+                        bascketCounTF.getValue(),
+                        deadlineTF.getValue()
+                        ));
+
+        //mainVB add Components
+        mainVB.add(idOasisLabel);
+        mainVB.add(idOasisTF);
+
+        mainVB.add(bascketCountLabel);
+        mainVB.add(bascketCounTF);
+
+        mainVB.add(dedalineLabel);
+        mainVB.add(deadlineTF);
+
+        panel.add(mainVB);
+        newTaskFrame.add(panel);
+        newTaskFrame.pack();
+        //id oazy
+        //pocet kosu
+        //deadline
+        //cas pridani ziskat auto
+    }*/
+
+    /*private static void addEventBtnController(JFrame frame, int idOasis, int bascketCount, int deadline) {
+        Main.addTaskEvent(new Task());
+
+        frame.dispose();
+    }*/
 
     public static void stopBtnController() {
         //Aktivovat Tlacitka Tasku
-        for (Component component :
+        /*for (Component component :
                 taskButtonsBH.getComponents()) {
             component.setEnabled(true);
-        }
+        }*/
 
         Main.stopRunningOutput();
     }
 
     private static void previeusStepBtnController() {
+        showStateBtn.setEnabled(false);
         Main.previusStepEvent();
     }
 
     private static void nextStepBtnController() {
-        Main.nextStepEvent();
+        if (Main.nextStepEvent()[1]) showStateBtn.setEnabled(true);
     }
 
     private static void runToEndBtnController() {
         //Dektivovat Tlacitka Tasku
-        for (Component component :
+        /*for (Component component :
                 taskButtonsBH.getComponents()) {
             component.setEnabled(false);
-        }
+        }*/
 
         Thread thread = new Thread(() -> {Main.runToEnd();});
         thread.start();
@@ -237,10 +307,10 @@ class GUI {
                 debuggerButtonsBH.getComponents()) {
             component.setEnabled(true);
         }
-        for (Component component :
+        /*for (Component component :
                 taskButtonsBH.getComponents()) {
             component.setEnabled(true);
-        }
+        }*/
 
         JFileChooser fileChooser = new JFileChooser();
 
@@ -274,11 +344,11 @@ class GUI {
         scrollbar.setValue(scrollbar.getMaximum()/2);
 
         //Dektivovat Tlacitka
-        /*for (Component component :
+       /* for (Component component :
                 debuggerButtonsBH.getComponents()) {
             component.setEnabled(false);
-        }
-        for (Component component :
+        }*/
+        /*for (Component component :
                 taskButtonsBH.getComponents()) {
             component.setEnabled(false);
         }*/

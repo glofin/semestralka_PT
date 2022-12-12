@@ -30,6 +30,8 @@ public class EventManager {
 	/** Cas konce uspesne simulace */
 	public double endTime;
 
+	private Event currentEvent;
+
 	int numberOftravelingCamels = -1;
 	
 	public EventManager(PriorityQueue<Event> events, Task[] tasks, int count) {
@@ -45,7 +47,8 @@ public class EventManager {
 	public boolean nextEvent() {
 
 		if (events.size()<1) {return false;}
-		Event e = events.poll();
+		currentEvent = events.poll();
+		Event e = currentEvent;
 		//System.out.println(events.toString());
 
 		switch (Objects.requireNonNull(e).type) {
@@ -368,5 +371,9 @@ public class EventManager {
 
 	public List<Task> getProcessingTasks() {
 		return processingTasks;
+	}
+
+	public Event getCurrentEvent() {
+		return currentEvent;
 	}
 }

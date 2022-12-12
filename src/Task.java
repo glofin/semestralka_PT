@@ -2,11 +2,13 @@
  * Trida typu prepravka, jednotlive instance odpovidaji jednotlivym pozadavkum behem simulace
  */
 public class Task {
+
+	private boolean isDeleted = false;
 	public final double arrivalTime;
 	public final int idOaza;
 	public final int basketCount;
 	public final double deadline;
-	
+
 	/** Cas, kdy byl pozadavek splnen */
 	public double finishTime;
 	
@@ -24,6 +26,14 @@ public class Task {
 		this.idOaza = idOaza;
 		this.basketCount = basketCount;
 		this.deadline = dealine;
+	}
+
+	public void setDeleted(boolean deleted) {
+		isDeleted = deleted;
+	}
+
+	public boolean isDeleted() {
+		return isDeleted;
 	}
 
 	@Override
