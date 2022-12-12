@@ -9,6 +9,7 @@ import java.util.*;
  * a vytvari propojeni mezi GUI a ostatnimi tridami
  */
 public class Main {
+	/**pro jedinacka*/
 	private static Main messenger;
 
 	/** graf reprezentujici mapu */
@@ -29,6 +30,7 @@ public class Main {
 
 	/** manager pro zpracovavani pozadavku a dalsich eventu*/
 	private static EventManager manager;
+	/**pro jedinacka*/
 	public static Main getInstance(){
 		if(messenger==null) {
 			messenger = new Main();
@@ -286,7 +288,10 @@ public class Main {
 
 		System.setOut(GUI.getPrintStream());
 	}
-	
+
+	/**
+	 * Vypis statistik o Skladech
+	 */
 	private static String stockStats() {
 		String out = "Sklady:\n";
 		for(int i = 0; i < manager.stockCount; i++) {
@@ -299,6 +304,9 @@ public class Main {
 		return out;
 	}
 
+	/**
+	 * Vypis statistik o Pozadavcich
+	 */
 	private static String taskStats() {
 		String out = "Celkovy pocet pozadavku: " + manager.tasks.length + "\n";
 		for(int i = 0; i < manager.tasks.length; i++) {
@@ -309,6 +317,9 @@ public class Main {
 		return out;
 	}
 
+	/**
+	 * Vypis statistik o velbloudech
+	 */
 	private static String[] camelStats() {
 		double allTravel = 0;
 		double allWait = 0;
@@ -347,6 +358,9 @@ public class Main {
 		return ret;
 	}
 
+	/**
+	 * Vypis statistik o vypisech velbloudu a jejich cestovani
+	 */
 	private static String camelsPath(Edge[] edgesArr, Camel camel) {
     	double distance = 0;
     	String path = "\tSklad " + (camel.home.id+1) + " ";
@@ -365,6 +379,10 @@ public class Main {
 		return path;
 	}
 
+	/**
+	 * Vypis statistik o vrcholu
+	 * @param id vrcholu v tasks
+	 */
 	private static String node(int id) {
 		String ret;
 		if(id >= manager.stockCount) {

@@ -45,7 +45,9 @@ public class Generator {
 	/** Maximalni pocet kosu, co muze pozadavek vyzadovat */
 	private final static int TASK_BASKET_MAX = 60;
 
-	
+	/**
+	 * Generuje nahodny vstup s mapou
+	 */
 	public static String generateRandomInput() {
 		Random r = new Random(); //seed 64 splnitelny
 		String s = "";
@@ -87,6 +89,12 @@ public class Generator {
 		return s;
 	}
 
+	/**
+	 * Generuje task
+	 * @param r pro nahodna cisla
+	 * @param oasisCount pocet oaz
+	 * @return string do souboru
+	 */
 	private static String genTask(Random r, int oasisCount) {
 		String s = " ";
 		double arrTime = r.nextDouble() * TASK_TIME_MAX;
@@ -98,6 +106,12 @@ public class Generator {
 		return s;
 	}
 
+	/**
+	 * Vygeneruje typy velbloudu
+	 * @param r pro nahodna cisla
+	 * @param typeCount pocet typu velbloudu
+	 * @return string do souboru
+	 */
 	private static String genTypes(Random r, int typeCount) {
 		String s = "";
 		double nextChance = 1;
@@ -143,6 +157,13 @@ public class Generator {
 		
 	}
 
+	/**
+	 * Generuje Cesty mezi vrcholy
+	 * @param r pro nahodna cisla
+	 * @param verticeCount pocet cest
+	 * @param vertices vrcholy
+	 * @return string do souboru
+	 */
 	private static String genVertice(Random r, int verticeCount, List<Vector> vertices) {
 		int i1 = 0;
 		int i2 = 0;
@@ -158,6 +179,11 @@ public class Generator {
 		return vertice.toString();
 	}
 
+	/**
+	 * Generuje oazi
+	 * @param r pro nahodna cisla
+	 * @return string do souboru
+	 */
 	private static String genOasis(Random r) {
 		String s = "";
 		s += " " + r.nextDouble() * POS_MAX;
@@ -165,6 +191,11 @@ public class Generator {
 		return s;
 	}
 
+	/**
+	 * Generuje sklad
+	 * @param r pro nahodna cisla
+	 * @return string do souboru
+	 */
 	private static String genStock(Random r) {
 		String s = "";
 		s += " " + r.nextDouble() * POS_MAX;
