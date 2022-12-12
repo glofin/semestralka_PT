@@ -102,8 +102,10 @@ public class EventManager {
 								e.camel.name,
 								e.idInfo + 1));
 		e.camel.home.addCamelToSet(e.camel);
-		if(numberOftravelingCamels == 0) {endTime = e.time;}
 		finishedTasksAndCamelsHome.add(e.camel.task);
+		if(finishedTasksAndCamelsHome.size() == tasks.length) {
+			endTime = e.time;
+		}
 	}
 
 

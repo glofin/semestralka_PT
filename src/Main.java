@@ -31,8 +31,6 @@ public class Main {
 		return messenger;
 	}
 
-	private void Main(){};
-
 	/**
 	 * metoda precte soubor z fileName a nastaviho do datovych struktur
 	 * pouzivanych v aplikaci a nastavi eventManager
@@ -262,14 +260,16 @@ public class Main {
 		String out;
 		System.setOut(new PrintStream(new File("Statistics.txt")));
 
-		out = camelStats();
-		double travelAll = Double.parseDouble(out.substring(0, 11));
-		out = out.substring(12);
+		String[] camelStats = camelStats();
+		out = camelStats[0];
+		double travelAll = Double.parseDouble(camelStats[1]);
+		double waitAll = Double.parseDouble(camelStats[2]);
 		out += taskStats();
 		out += stockStats();
-		out += String.format(Locale.US, "Celkova usla vzdalenost: %.2f, Delka simulace: %.2f", travelAll, manager.endTime);
-		//TODO celkova doba odpocinku vsech pouzitych velbloudu, kolik velbloudu od jednotlivych druhu bylo pouzito
-		
+		out += String.format(Locale.US, " Delka simulace: %.2f\nCelkova usla vzdalenost: %.2f\nCelkova doba cekani: %.2f\n",manager.endTime, travelAll, waitAll);
+		for(CamelType typ: Camel.getCamelTypes()) {
+			out += "Jedincu druhu " + typ.name + " vygenerovano celkem: " + typ.count + "\n";
+			}
 		System.out.print(out);
 		
 	}
@@ -296,8 +296,9 @@ public class Main {
 		return out;
 	}
 
-	private static String camelStats() {
+	private static String[] camelStats() {
 		double allTravel = 0;
+		double allWait = 0;
 		String out = "";
 		int count = 0;
 		for(int i = 0; i < manager.count; i++) {
@@ -305,23 +306,29 @@ public class Main {
 			out += "Pocet ve skladu " + (i+1) + " je " + stock.camelSet.size() +":\n";
 			count += stock.camelSet.size();
 			for(Camel camel: stock.camelSet) {
-				out += String.format(Locale.US,"  %s - Druh: %s, Rychlost: %.2f, Vzdalenost: %.2f, trasy: ",
+				double waitTime = manager.endTime - camel.generationTime;
+				allWait += waitTime;
+				out += String.format(Locale.US,"  %s - Druh: %s, Rychl: %.2f, Ujde: %.2f, Trasy: ",
 						camel.name, camel.type.name, camel.getSpeed(), camel.getMaxDistance());
 				if(camel.paths != null) {
 					out += camel.paths.size();
 					double travelDistance = 0;
+					double travelTime = 0;
 					for(MyPath path: camel.paths) {
 						travelDistance += path.getFullDistance() * 2;
+						travelTime += path.getTravelTime(camel);
 					}
 					allTravel += travelDistance;
-					out += String.format(Locale.US,", Usel: %.2f, Odpocival: \n", travelDistance);//TODO odecist cas na trase
+					allWait -= travelTime;
+					out += String.format(Locale.US,", Usel: %.2f, Cekal: %.2f\n", travelDistance, waitTime - travelTime);
 				} else {
-					out += String.format(Locale.US,"0, Usel: 0.00, Odpocival: %.2f\n", manager.endTime - camel.generationTime);
+					out += String.format(Locale.US,"0, Usel: 0.00, Cekal: %.2f\n", manager.endTime - camel.generationTime);
 				}
 			}
 		}
-		out = String.format(Locale.US,"%011.2fCelkovy pocet velbloudu: %d\n %s", allTravel, count, out);
-		return out;
+		out = String.format(Locale.US,"Celkovy pocet velbloudu: %d\n %s", count, out);
+		String[] ret = {out, "" + allTravel, "" + allWait};
+		return ret;
 	}
 
 }

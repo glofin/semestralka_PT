@@ -25,6 +25,24 @@ public class MyPath implements Comparable<MyPath>{
         }
         return new double[]{count,max};
     }
+    /**
+     * Zjisti celkovy cas, ktery velbloud stravi na trase
+     * @param camel	velbloud, pro ktereho se zjistuje cas
+     * @return		cas straveny na trase
+     */
+    public double getTravelTime(Camel camel) {
+    	double travelTime = this.fullDistance / camel.speed;
+    	double distance = 0;
+    	for(Edge e: edgesArr) {
+    		distance += e.getWeight();
+    		if(distance > camel.distance) {
+    			distance = 0;
+    			travelTime += camel.drinkTime;
+    		}
+    	}
+    	
+    	return travelTime;
+    }
 
     public Stock getStartStock(){
         return (Stock) edgesArr[0].getStartNode();

@@ -1,14 +1,10 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.AdjustmentListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.text.NumberFormat;
 import java.util.Hashtable;
 
 import static java.awt.Component.LEFT_ALIGNMENT;
@@ -23,7 +19,7 @@ class GUI {
 
     private static AdjustmentListener outputScrolling = e -> e.getAdjustable().setValue(e.getAdjustable().getMaximum());
 
-    private static boolean opened = true;
+//    private static boolean opened = true;
 
     private static String defaultFilePath = "data/tutorial.txt";
 
@@ -31,7 +27,7 @@ class GUI {
     //private static Box taskButtonsBH;
     private static JButton showStateBtn;
 
-    private StringBuilder outputTAStrBui = new StringBuilder();
+ //   private StringBuilder outputTAStrBui = new StringBuilder();
 
     private GUI(){};
 
@@ -61,7 +57,7 @@ class GUI {
             setUp(frame);
 
             PrintStream printStream = new PrintStream(new CustomOutputStream(outputTA));
-            PrintStream standardOut = System.out;
+   //         PrintStream standardOut = System.out;
 
 
             System.setOut(printStream);

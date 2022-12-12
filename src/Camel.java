@@ -15,7 +15,7 @@ public class Camel implements Comparable<Camel> {
  	/** Jmeno konkretniho velbloda */
  	public final String name;
  	
- 	/** index domovskeho skladu */
+ 	/** Index domovskeho skladu */
  	public final Stock home;
  	
  	/** Rychlost velblouda */
@@ -33,7 +33,7 @@ public class Camel implements Comparable<Camel> {
  	/** Aktualni pozadavek, ktery tento velbloud vykonava */
  	public Task task = null;
 
-	 public int carryBasketsOnTask = 0;
+	public int carryBasketsOnTask = 0;
  	
  	/** Archiv vsech cest, na kterych velbloud byl */
  	public Deque<MyPath> paths;
@@ -51,7 +51,6 @@ public class Camel implements Comparable<Camel> {
  		type = drh;
  		type.count++;
  		name = type.name + "_" + type.count;
-		//System.out.println("Novy velbloud " + name);
  		speed = spd;
  		maxDistance = mDistance;
  		drinkTime = type.drinkTime;
@@ -120,6 +119,10 @@ public class Camel implements Comparable<Camel> {
 		}
 		druhMaxDistance = maxDistance;
 		druhMaxSpeed = maxSpeed;
+	}
+	
+	public static CamelType[] getCamelTypes() {
+		return types;
 	}
 
 	public void setTask(Task task) {
