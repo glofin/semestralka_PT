@@ -35,7 +35,6 @@ public class Stock extends AbstractNode {
 	 * @param y					y-ova souradnice skladu
 	 * @param basketCount		aktualni pocet kosu ve skladu
 	 * @param basketMakingTime	doba, za kterou se ve skladu vytvori nove kose
-	 * @param loadingTime
 	 */
 	public Stock(int id, double x, double y, int basketCount, double basketMakingTime, double loadingTime) {
 		this.id = id;
@@ -114,7 +113,6 @@ public class Stock extends AbstractNode {
 	/**
 	 * pro serazeni adjNodes v Graph podle id
 	 * @param o the object to be compared.
-	 * @return
 	 */
 	@Override
 	public int compareTo(AbstractNode o) {

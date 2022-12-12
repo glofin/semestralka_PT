@@ -27,7 +27,6 @@ public class Oasis extends AbstractNode {
 	/**
 	 * pro serazeni adjNodes v Graph podle id
 	 * @param o the object to be compared.
-	 * @return
 	 */
 	@Override
 	public int compareTo(AbstractNode o) {

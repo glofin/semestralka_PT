@@ -96,8 +96,7 @@ public class Graph {
             if (node instanceof Stock){
 
                 List<Edge> edgeList = new ArrayList<>();
-               // System.out.println(node.getClass() + " id " + node.getId());
-                //System.out.println("Sklad distance " + node.getDistance() + " shortest " + node.getShortestPaths().get(oasis));
+
                 AbstractNode currentNode = node;
                 AbstractNode lastNode = currentNode.getShortestPaths().get(oasis);
                 while (currentNode != lastNode){
@@ -138,8 +137,7 @@ public class Graph {
 
         while (workingNodes.size() != 0){
             AbstractNode currentNode = findMinDistanceNode(workingNodes);
-            //System.out.println("workingNodes " + workingNodes);
-            //System.out.println("findMinDistanceNode " + findMinDistanceNode(workingNodes));
+
             List<Edge> currentNeighbours = adjNodes.get(currentNode);
             for (Edge edge :
                     currentNeighbours) {
