@@ -105,7 +105,7 @@ public class Main {
 			currentEventId++;
 		}
 
-		rtrBool[0] = manager.nextEvent();
+		rtrBool[0] = isNotErrorEvent;
 		rtrBool[1] = true;
 		return rtrBool;
 	}
@@ -172,7 +172,8 @@ public class Main {
 				Stock stock = new Stock(nodesId++, sc.nextDouble(), sc.nextDouble(), sc.nextInt(), sc.nextDouble(), sc.nextDouble());
 				//System.out.println("BasketMakingTime: " + stock.basketMakingTime);
 				graph.addNode(stock);//pridani vrcholu do grafu
-				events.add(new Event(stock.loadingTime, EventType.StorageRefill, i));    //vytvori skladu event typu storageRefill
+				//System.out.println("setup stock.loadingTime=" + stock.loadingTime);
+				events.add(new Event(stock.basketMakingTime, EventType.StorageRefill, i));    //vytvori skladu event typu storageRefill
 			}
 
 			int oasisCount = sc.nextInt();

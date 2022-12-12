@@ -11,6 +11,9 @@ public class Stock extends AbstractNode {
 
 	/** Aktualni pocet kosu ve skladu */
 	int basketCount;
+	/** Cas kdy se aktualizoval naposledy pocet kosu ve skladu
+	 *  kdyz se generuji kose v dany cas u EventManager*/
+	double basketCounRefreshTime;
 	
 	/** doba, za kterou se ve skladu vytvori nove kose */
 	final double basketMakingTime;
@@ -39,6 +42,7 @@ public class Stock extends AbstractNode {
 		this.x = x;
 		this.y = y;
 		this.basketCount = basketCount;
+		basketCounRefreshTime = 0;
 		newBaskets = basketCount;
 		this.basketMakingTime = basketMakingTime;
 		this.loadingTime = loadingTime;
@@ -68,6 +72,7 @@ public class Stock extends AbstractNode {
 
 	public void removeBaskets(int count){
 		basketCount -= count;
+		assert basketCount<0 : "kose jdou ve skladu: " + id + " do minusu";
 	}
 
 	public int getBasketCount() {

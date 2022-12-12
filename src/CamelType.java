@@ -48,6 +48,10 @@ public class CamelType {
 		return maxV;
 	}
 
+	public int getMaxLoad() {
+		return maxLoad;
+	}
+
 	@Override
 	public String toString() {
 		return name;

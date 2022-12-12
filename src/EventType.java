@@ -1,3 +1,4 @@
+import java.util.concurrent.Delayed;
 
 public enum EventType {
 
@@ -23,5 +24,10 @@ public enum EventType {
 	CamelHome,
 	
 	/** Prichod noveho pozadacku */
-	NewTask
+	NewTask,
+
+	/** Event kdyz sklad pri prochodu pozadavku nema dostatek kosu
+	 * vytvori se tento dealyed task a vykona se a task se vykona kdyz sklad
+	 * ma dostatek kosu */
+	DelayedTask
 }

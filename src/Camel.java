@@ -32,6 +32,8 @@ public class Camel implements Comparable<Camel> {
  	
  	/** Aktualni pozadavek, ktery tento velbloud vykonava */
  	public Task task = null;
+
+	 public int carryBasketsOnTask = 0;
  	
  	/** Archiv vsech cest, na kterych velbloud byl */
  	public Deque<MyPath> paths;
@@ -98,7 +100,7 @@ public class Camel implements Comparable<Camel> {
 	/**
  	 *  Velbloud se napije a doplni si zasobu vody
  	 */
- 	public void drink() {//TODO neni vyuzita ale asi by mela
+ 	public void drink() {
  		distance = maxDistance;
  	}
  
@@ -136,8 +138,21 @@ public class Camel implements Comparable<Camel> {
 		return druhMaxSpeed;
 	}
 
+	public CamelType getType() {
+		return type;
+	}
+
 	public double getSpeed() {
 		return speed;
+	}
+
+
+	public void setCarryBasketsOnTask(int carryBasketsOnTask) {
+		this.carryBasketsOnTask = carryBasketsOnTask;
+	}
+
+	public int getCarryBasketsOnTask() {
+		return carryBasketsOnTask;
 	}
 
 	/**
