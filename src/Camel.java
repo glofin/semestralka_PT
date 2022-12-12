@@ -186,7 +186,7 @@ public class Camel implements Comparable<Camel> {
 	@Override
 	public String toString() {
 		return "Velbloud {" +
-				"typ=" + type.toString() +
+				"typ=" + type +
 				", jmeno='" + name + '\'' +
 				", rychlost=" + speed +
 				", vzdalenost=" + distance +

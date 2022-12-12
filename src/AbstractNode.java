@@ -20,14 +20,6 @@ public abstract class AbstractNode implements Comparable<AbstractNode> {
 	/** zaznam z dajkstry pocitajici do 1.Node je nejkratsi cesta pres 2.Node*/
 	Map<AbstractNode, AbstractNode> shortestPaths = new HashMap<>();
 
-	public double getX() {
-		return x;
-	}
-
-	public double getY() {
-		return y;
-	}
-
 	public int getId() {
 		return id;
 	}

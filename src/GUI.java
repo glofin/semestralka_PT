@@ -17,15 +17,14 @@ class GUI {
 
     /** tlacitka pro krokovani*/
     private static Box debuggerButtonsBH;
-    private static GUI messenger;
     /**vypis z eventu*/
     private static JTextArea outputTA;
     /**scrolovaci pane kde je vypis eventu*/
     private static JScrollPane outputSP;
     /** listener posouvajici scroll pane dolu pri vypisu dat*/
-    private static AdjustmentListener outputScrolling = e -> e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+    private static final AdjustmentListener outputScrolling = e -> e.getAdjustable().setValue(e.getAdjustable().getMaximum());
 
-    private static String defaultFilePath = "data/tutorial.txt";
+    private static final String defaultFilePath = "data/tutorial.txt";
 
     /** hlavni okno GUI*/
     private static JFrame frame;
@@ -46,14 +45,7 @@ class GUI {
     /**
      * Jedinacek konstruktor
      */
-    private GUI(){};
-
-    public static GUI getInstance(){
-        if(messenger==null) {
-            messenger = new GUI();
-        }
-        return messenger;
-    }
+    private GUI(){}
 
     /**
      * Hlavni metoda otevre hlavni okno

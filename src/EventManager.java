@@ -36,9 +36,6 @@ public class EventManager {
 	/** Zaznam outputu pro krokovani zpet v GUI*/
 	private final List<String> outputHistory = new ArrayList<>();
 
-	/** aktualni zpracovavany Event*/
-	private Event currentEvent;
-	
 	private int numberOfTravelingCamels = -1;
 	
 	/**
@@ -65,8 +62,6 @@ public class EventManager {
 		if(endTime > 0){return false;}
 
 		Event e = events.poll();
-
-		currentEvent = e;
 
 		switch (Objects.requireNonNull(e).type) {
 			case StorageRefill -> reffilStorage(e);
