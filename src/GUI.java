@@ -25,7 +25,7 @@ class GUI {
     /** listener posouvajici scroll pane dolu pri vypisu dat*/
     private static AdjustmentListener outputScrolling = e -> e.getAdjustable().setValue(e.getAdjustable().getMaximum());
 
-    private static String defaultFilePath;
+    private static String defaultFilePath = "data/tutorial.txt";
 
     /** hlavni okno GUI*/
     private static JFrame frame;
@@ -41,6 +41,7 @@ class GUI {
     private static JButton stopBtn;
     /**slider pro rychlost vypisu*/
     private static JSlider speedSlider;
+    private static PrintStream printStream;
 
     /**
      * Jedinacek konstruktor
@@ -63,12 +64,12 @@ class GUI {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setUp(frame);
 
-            PrintStream printStream = new PrintStream(new CustomOutputStream(outputTA));
-   //         PrintStream standardOut = System.out;
+            printStream = new PrintStream(new CustomOutputStream(outputTA));
+            PrintStream standardOut = System.out;
 
 
             System.setOut(printStream);
-            System.setErr(printStream);
+            System.setErr(standardOut);
         });
     }
 
@@ -158,7 +159,7 @@ class GUI {
     }
     
     private static JSlider setUpSlider() {
-        JSlider speedSlider = new JSlider(JSlider.HORIZONTAL);
+        speedSlider = new JSlider(JSlider.HORIZONTAL);
         speedSlider.setMinimum(1);
         speedSlider.setMaximum(8);
         speedSlider.setValue(4);
@@ -236,6 +237,7 @@ class GUI {
      * @param filePath cesta k souboru mapy
      */
     private static void startMain(String filePath) {
+        //System.out.println("GUI start main" + filePath);
         Thread thread = new Thread(() -> Main.start(filePath));
         thread.start();
     }
@@ -257,10 +259,9 @@ class GUI {
      */
     private static void importMapController() {
 
-
-
         System.out.println();
         System.out.println();
+        //System.out.println("import");
 
         //Zaktivovat Tlacitka
         for (Component component :
@@ -289,6 +290,7 @@ class GUI {
         else {
             fileChooser.showOpenDialog(frame);
             File selectedFile = fileChooser.getSelectedFile();
+
             if (selectedFile != null) {startMain(selectedFile.getAbsolutePath());}
         }
 
@@ -302,6 +304,9 @@ class GUI {
 
     }
 
+    public static PrintStream getPrintStream() {
+        return printStream;
+    }
 }
 
 /**

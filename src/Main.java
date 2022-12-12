@@ -283,7 +283,8 @@ public class Main {
 			out += "Jedincu druhu " + typ.name + " vygenerovano celkem: " + typ.count + "\n";
 			}
 		System.out.print(out);
-		
+
+		System.setOut(GUI.getPrintStream());
 	}
 	
 	private static String stockStats() {
