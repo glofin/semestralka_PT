@@ -57,10 +57,6 @@ public class Stock extends AbstractNode {
 		basketCount += newBaskets;
 	}
 
-	public SortedSet<Camel> getSet() {
-		return camelSet;
-	}
-
 	public void addCamelToSet(Camel camel) {
 		camelSet.add(camel);
 	}

@@ -47,7 +47,7 @@ public class Generator {
 
 	
 	public static String generateRandomInput() {
-		Random r = new Random(); //seed 64 splnitelny, seed 20 error?
+		Random r = new Random(); //seed 64 splnitelny
 		String s = "";
 		int i;
 		

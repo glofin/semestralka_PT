@@ -44,7 +44,7 @@ public class Main {
 
 		//NACTENI SOUBORU
 		try {
-			String input = Parser.fileToString("data/centre_medium.txt");
+			String input = Parser.fileToString("data/tutorial.txt");
 			setUp(input);
 			//System.out.println(graph.toString());//vypis grafu
 		} catch (IOException e) {//chyba ve vstupnim souboru nebo jeho jmene
@@ -58,6 +58,13 @@ public class Main {
 			isNotErrorEvent = manager.nextEvent();
 		}
 		while(isNotErrorEvent);
+
+		//ZAPIS STATISTIK DO SOUBORU
+		try {
+			makeOutputFile();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -102,6 +109,13 @@ public class Main {
 		boolean isNotErrorEvent = manager.nextEvent();
 		if (isNotErrorEvent) {
 			currentGUIEventId = manager.getOutputHistory().size() - 1;
+		}else {
+			try {
+				makeOutputFile();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				System.exit(0);
+			}
 		}
 
 		rtrBool[0] = isNotErrorEvent;
@@ -179,7 +193,7 @@ public class Main {
 
 			int edgesCount = sc.nextInt();
 			for (int i = 0; i < edgesCount; i++) {
-				graph.addEdge(graph.getNodebyId(sc.nextInt() - 1), graph.getNodebyId(sc.nextInt() - 1));//TODO zmenit getNodebyId
+				graph.addEdge(graph.getNodebyId(sc.nextInt() - 1), graph.getNodebyId(sc.nextInt() - 1));
 			}
 
 			CamelType[] camelTypes = new CamelType[sc.nextInt()];
@@ -253,6 +267,10 @@ public class Main {
 	public static void makeOutputFile() throws FileNotFoundException {
 		String out;
 		System.setOut(new PrintStream(new File("Statistics.txt")));
+		if(manager.tasks.length != manager.getFinishedTasks().size()) {
+			System.out.println("Vsichni vymreli, Harpagon zkrachoval, Konec simulace");
+			System.exit(0);
+		}
 
 		String[] camelStats = camelStats();
 		out = camelStats[0];
@@ -300,7 +318,8 @@ public class Main {
 			out += "Pocet ve skladu " + (i+1) + " je " + stock.camelSet.size() +":\n";
 			count += stock.camelSet.size();
 			for(Camel camel: stock.camelSet) {
-				double waitTime = manager.endTime - camel.generationTime;
+				String camelsPath = "";
+				double waitTime = manager.endTime - camel.generatedTime;
 				allWait += waitTime;
 				out += String.format(Locale.US,"  %s - Druh: %s, Rychl: %.2f, Ujde: %.2f, Trasy: ",
 						camel.name, camel.type.name, camel.getSpeed(), camel.getMaxDistance());
@@ -311,17 +330,48 @@ public class Main {
 					for(MyPath path: camel.paths) {
 						travelDistance += path.getFullDistance() * 2;
 						travelTime += path.getTravelTime(camel);
+						camelsPath += camelsPath(path.getEdgesArr(), camel);
 					}
 					allTravel += travelDistance;
 					allWait -= travelTime;
 					out += String.format(Locale.US,", Usel: %.2f, Cekal: %.2f\n", travelDistance, waitTime - travelTime);
 				} else {
-					out += String.format(Locale.US,"0, Usel: 0.00, Cekal: %.2f\n", manager.endTime - camel.generationTime);
+					out += String.format(Locale.US,"0, Usel: 0.00, Cekal: %.2f\n", manager.endTime - camel.generatedTime);
 				}
+				out += camelsPath;
 			}
 		}
 		out = String.format(Locale.US,"Celkovy pocet velbloudu: %d\n %s", count, out);
 		String[] ret = {out, "" + allTravel, "" + allWait};
+		return ret;
+	}
+
+	private static String camelsPath(Edge[] edgesArr, Camel camel) {
+    	double distance = 0;
+    	String path = "\tSklad " + (camel.home.id+1) + " ";
+    	for(int i = 1; i < edgesArr.length; i++) {
+    		Edge e = edgesArr[i];
+    		distance += e.getWeight();
+    		if(distance > camel.distance) {
+    			distance = 0;
+    			path += "-> " + node(e.getStartNode().id) + "(pije) ";
+    		} else {
+    			path += "-> " + node(e.getStartNode().id) + "(prochazi) ";
+    		}
+    	}
+    	path += "-> " + node(edgesArr[edgesArr.length-1].getEndNode().id) + "\n";
+
+		return path;
+	}
+
+	private static String node(int id) {
+		String ret;
+		if(id >= manager.stockCount) {
+			ret = "Oaza " + (id-manager.stockCount+1);
+		} else {
+			ret = "Sklad " + (id+1);
+		}
+
 		return ret;
 	}
 

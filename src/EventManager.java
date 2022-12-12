@@ -15,7 +15,7 @@ public class EventManager {
 	public final Task[] tasks;
 	
 	/** Cas konce uspesne simulace */
-	public double endTime;
+	public double endTime = -1;
 	
 	/** graf reprezentujici mapu */
 	public static Graph graph = Graph.getInstance();
@@ -39,6 +39,8 @@ public class EventManager {
 	/** aktualni zpracovavany Event*/
 	private Event currentEvent;
 	
+	private int numberOfTravelingCamels = -1;
+	
 	/**
 	 * Vytvori novou instance tridy EventManager
 	 * @param events	Prioritni fronta nadchazejicich eventu
@@ -60,7 +62,7 @@ public class EventManager {
 		//kdyz nejsou eventy
 		if (events.size()<1) {return false;}
 		//kdyz nejsou Tasky
-		if(finishedTasksAndCamelsHome.size()>=tasks.length){return false;}
+		if(endTime > 0){return false;}
 
 		Event e = events.poll();
 
@@ -101,13 +103,14 @@ public class EventManager {
 	private void camelHome(Event e) {
 		assert e.type != EventType.CamelHome : "Wrong EventType";
 
+		numberOfTravelingCamels--;
 		printOutput(String.format(Locale.US, "Cas: %d, Velbloud: %s, Navrat do skladu: %d\n",
 								Math.round(e.time),
 								e.camel.name,
 								e.idInfo + 1));
 		e.camel.home.addCamelToSet(e.camel);
 		finishedTasksAndCamelsHome.add(e.camel.task);
-		if(finishedTasksAndCamelsHome.size() == tasks.length) {
+		if(finishedTasksAndCamelsHome.size() >= tasks.length && numberOfTravelingCamels == 0) {
 			endTime = e.time;
 		}
 	}
@@ -185,7 +188,8 @@ public class EventManager {
 	 */
 	private void camelDeparting(Event e) {
 		assert e.type != EventType.CamelDeparting : "Wrong EventType";
-
+		
+		numberOfTravelingCamels = numberOfTravelingCamels == -1 ? numberOfTravelingCamels +2 : numberOfTravelingCamels +1;
 		printOutput(String.format(Locale.US, "Cas: %d, Velbloud: %s, Sklad %d, Nalozeno kosu: %d, Odchod v %d\n",
 				Math.round(e.time),
 								e.camel.name,
@@ -295,9 +299,10 @@ public class EventManager {
 		}
 		//hodit ErrorEvent
 		assert currentPath != null;
-		if (idPathtoOasis==(pathstoOasis.size() - 1) &&
-			maxCamelTypeDistance < pathstoOasis.get(pathstoOasis.size()-1).getMaxDistance()) {
+		if ((idPathtoOasis==(pathstoOasis.size() - 1) &&
+			maxCamelTypeDistance < pathstoOasis.get(pathstoOasis.size()-1).getMaxDistance()) || idPathtoOasis ==pathstoOasis.size()) {
 				events.add(new Event(currentTask.arrivalTime, EventType.ErrorTask, currentTask.idOaza));
+				return;
 			}
 
 		// KONTROLA jestli idealni velbloud zvladne cestu v case
@@ -307,6 +312,7 @@ public class EventManager {
 		//hodit ErrorEvent
 		if (distance != 0 && idealCamelTime > maxTimeforTask) {
 			events.add(new Event(currentTask.arrivalTime, EventType.ErrorTask, currentTask.idOaza));
+			return;
 		}
 
 		// HLEDANI jestli sklad ze ktereho jde akutalni cesta, ma velblouda co to zvladne
@@ -318,6 +324,7 @@ public class EventManager {
 			selectedCamel = generateCamel(currentPath);
 		}
 		selectedCamel.setTask(currentTask);
+		selectedCamel.addPath(currentPath);
 		doTask2(selectedCamel, currentPath);
 	}
 	
@@ -339,8 +346,9 @@ public class EventManager {
 			while (processedBasketsCount < currentTask.basketCount) {
 				Camel camel = findCamelforPath(currentPath);
 				camel.setTask(currentTask);
-				camel.home.removeCamelFromSet(selectedCamel);
-				camelsOnTask.add(selectedCamel);
+				camel.home.removeCamelFromSet(camel);
+				camelsOnTask.add(camel);
+				camel.addPath(currentPath);
 				//planEventsforCamelTravel(currentTask.arrivalTime, currentPath, selectedCamel);
 
 				//posledni velbloud
@@ -406,7 +414,8 @@ public class EventManager {
 	private Camel findCamelforPath(MyPath currentPath) {
 		//PROJIT JESTLI SKLAD NEMA VELBLOUDA CO TO ZVLADNE
 		Stock startStock = currentPath.getStartStock();
-		if (startStock.camelSet.first().getMaxDistance()>currentPath.getMaxDistance()){
+		if (!startStock.camelSet.isEmpty() && 
+				startStock.camelSet.first().getMaxDistance()>currentPath.getMaxDistance()){
 			return startStock.camelSet.first();
 		}
 
