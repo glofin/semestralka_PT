@@ -28,7 +28,7 @@ public class Graph {
 
     void addNode(AbstractNode node) {
         adjNodes.putIfAbsent(node, new ArrayList<>());
-        if (nodesList.size() != node.id) System.out.println("Chyba pri pridani vrcholu ve tride Graph addNode()");
+        if (nodesList.size() != node.id) {System.out.println("Chyba pri pridani vrcholu ve tride Graph addNode()");}
         nodesList.add(node);
     }
 

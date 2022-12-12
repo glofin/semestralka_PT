@@ -1,9 +1,11 @@
-
+/**
+ * Trida typu prepravka, jednotlive instance odpovidaji jednotlivym pozadavkum behem simulace
+ */
 public class Task {
-	double arrivalTime;
-	int idOaza;
-	int basketCount;
-	double deadline;
+	public final double arrivalTime;
+	public final int idOaza;
+	public final int basketCount;
+	public final double deadline;
 	
 	/** Cas, kdy byl pozadavek splnen */
 	public double finishTime;
@@ -13,7 +15,7 @@ public class Task {
 	
 	/**
 	 * @param arrivalTime	cas prichodu pozadavku
-	 * @param idOaza			oaza, do ktere se ma dorucovat
+	 * @param idOaza		oaza, do ktere se ma dorucovat
 	 * @param basketCount	pocet kosu k doruceni
 	 * @param dealine		deadline splneni pozadavku
 	 */

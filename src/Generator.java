@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -65,7 +66,7 @@ public class Generator {
 		//CESTY
 		int verticeCount = oasisCount + stockCount;
 		int pathCount = r.nextInt((verticeCount*(verticeCount-1)/2));
-		ArrayList<Vector> vertices = new ArrayList<Vector>(pathCount+1);
+		List<Vector> vertices = new ArrayList<Vector>(pathCount+1);
 		s += " " + pathCount;
 		for (i = 0; i < pathCount; i++) {
 			s+= genVertice(r, verticeCount, vertices);
@@ -142,7 +143,7 @@ public class Generator {
 		
 	}
 
-	private static String genVertice(Random r, int verticeCount, ArrayList<Vector> vertices) {
+	private static String genVertice(Random r, int verticeCount, List<Vector> vertices) {
 		int i1 = 0;
 		int i2 = 0;
 		Vector vertice = new Vector();

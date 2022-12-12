@@ -1,4 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.*;
 
 public class Main {
@@ -224,7 +227,7 @@ public class Main {
 
 		returnStr.append("STAV SKLADU:").append("\n");
 		for (AbstractNode node: graph.getNodesList()){
-			if (node.getClass() == Oasis.class) continue;
+			if (node.getClass() == Oasis.class) {continue;}
 
 			returnStr.append(node).append("\n");;
 		}
@@ -235,4 +238,75 @@ public class Main {
 	public static void addEvent(Event event){
 		manager.addEvent(event);
 	}
+	
+	/**
+	 * Vytvori soubor Statistics.txt a zapise do nej statistiky z cele simulace
+	 * @throws FileNotFoundException pokud se nepodari soubor vytvorit
+	 */
+	public static void makeOutputFile() throws FileNotFoundException {
+		String out;
+		System.setOut(new PrintStream(new File("Statistics.txt")));
+
+		out = camelStats();
+		double travelAll = Double.parseDouble(out.substring(0, 11));
+		out = out.substring(12);
+		out += taskStats();
+		out += stockStats();
+		out += String.format(Locale.US, "Celkova usla vzdalenost: %.2f, Delka simulace: %.2f", travelAll, manager.endTime);
+		//TODO celkova doba odpocinku vsech pouzitych velbloudu, kolik velbloudu od jednotlivych druhu bylo pouzito
+		
+		System.out.print(out);
+		
+	}
+	
+	private static String stockStats() {
+		String out = "Sklady:\n";
+		for(int i = 0; i < manager.count; i++) {
+			Stock stock = (Stock) graph.getNodebyId(i);
+			out += String.format(Locale.US, " Sklad %d doplnen %dkrat:\n", i+1, stock.refills.size());
+			for(int j = 0; j < stock.refills.size(); j++) {
+				out += "  " + (j+1) + " - " + stock.getArchivedRefill(j) + "\n";
+			}
+		}
+		return out;
+	}
+
+	private static String taskStats() {
+		String out = "Celkovy pocet pozadavku: " + manager.tasks.length + "\n";
+		for(int i = 0; i < manager.tasks.length; i++) {
+			Task task = manager.tasks[i];
+			out += String.format(Locale.US, " %d - Prichod: %.2f, Deadline: %.2f, Doruceno v %.2f ze skladu %d velbloudem %s\n",
+							i+1, task.arrivalTime, task.deadline, task.finishTime, task.finishCamel.home.id+1, task.finishCamel.name);
+		}
+		return out;
+	}
+
+	private static String camelStats() {
+		double allTravel = 0;
+		String out = "";
+		int count = 0;
+		for(int i = 0; i < manager.count; i++) {
+			Stock stock = (Stock) graph.getNodebyId(i);
+			out += "Pocet ve skladu " + (i+1) + " je " + stock.camelSet.size() +":\n";
+			count += stock.camelSet.size();
+			for(Camel camel: stock.camelSet) {
+				out += String.format(Locale.US,"  %s - Druh: %s, Rychlost: %.2f, Vzdalenost: %.2f, trasy: ",
+						camel.name, camel.type.name, camel.getSpeed(), camel.getMaxDistance());
+				if(camel.paths != null) {
+					out += camel.paths.size();
+					double travelDistance = 0;
+					for(MyPath path: camel.paths) {
+						travelDistance += path.getFullDistance() * 2;
+					}
+					allTravel += travelDistance;
+					out += String.format(Locale.US,", Usel: %.2f, Odpocival: \n", travelDistance);//TODO odecist cas na trase
+				} else {
+					out += String.format(Locale.US,"0, Usel: 0.00, Odpocival: %.2f\n", manager.endTime - camel.generationTime);
+				}
+			}
+		}
+		out = String.format(Locale.US,"%011.2fCelkovy pocet velbloudu: %d\n %s", allTravel, count, out);
+		return out;
+	}
+
 }

@@ -1,3 +1,6 @@
+import java.util.Deque;
+import java.util.LinkedList;
+
 /**
  * Instance tridy {@code Camel} predstavuji jednotlive velbloudy
  */
@@ -29,6 +32,12 @@ public class Camel implements Comparable<Camel> {
  	
  	/** Aktualni pozadavek, ktery tento velbloud vykonava */
  	public Task task = null;
+ 	
+ 	/** Archiv vsech cest, na kterych velbloud byl */
+ 	public Deque<MyPath> paths;
+ 	
+ 	/** Cas, kdy byl velbloud vytvoren */
+ 	public double generationTime;
 
 	 private static double druhMaxDistance;
 
@@ -145,6 +154,13 @@ public class Camel implements Comparable<Camel> {
 			return 0;
 		}
 		return 1;
+	}
+	
+	public void addPath(MyPath path) {
+		if(paths == null) {
+			paths = new LinkedList<MyPath>();
+		}
+		paths.addLast(path);
 	}
 
 	@Override

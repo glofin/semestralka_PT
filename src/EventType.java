@@ -7,14 +7,8 @@ public enum EventType {
 	/** Doplneni kosu do skladu */
 	StorageRefill,
 	
-	/** Prichod noveho pozadacku */
-	NewTask,
-	
 	/** Ve skladu se velbloud zacina pripravovat na cestu */
 	CamelDeparting,
-	
-	/** Velbloud se dostavil do spravne oazy a zacal vykladat kose */
-	CamelFinished,
 	
 	/** Velbloud dosel do oazy/skladu, kde se napije */
 	CamelDrinks,
@@ -22,6 +16,12 @@ public enum EventType {
 	/** Velbloud prochazi oazou, ve ktere nepije */
 	CamelTransit,
 	
+	/** Velbloud se dostavil do spravne oazy a zacal vykladat kose */
+	CamelFinished,
+	
 	/** Velbloud se uspesne vratil domu do skladu */
-	CamelHome
+	CamelHome,
+	
+	/** Prichod noveho pozadacku */
+	NewTask
 }

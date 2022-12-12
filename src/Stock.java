@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -19,6 +22,9 @@ public class Stock extends AbstractNode {
 	
 	/** Mnozina vsech velbloudu, kteri jsou aktualne ve skladu */
 	SortedSet<Camel> camelSet;
+	
+	/** Seznam vsech doplneni skladu behem simulace */
+	List<Refill> refills = new ArrayList<Refill>();
 	
 	
 	/**
@@ -42,7 +48,8 @@ public class Stock extends AbstractNode {
 	/**
 	 * Vytvori ve skladu nove kose
 	 */
-	public void makeBaskets() {
+	public void makeBaskets(double time) {
+		refills.add(new Refill(time, basketCount, basketCount+newBaskets));
 		basketCount += newBaskets;
 	}
 
@@ -82,14 +89,18 @@ public class Stock extends AbstractNode {
 	public SortedSet<Camel> getCamelSet() {
 		return camelSet;
 	}
+	
+	public String getArchivedRefill(int i) {
+		return refills.get(i).toString();
+	}
 
 	@Override
 	public String toString() {
-		StringBuilder returnStr = new StringBuilder("Sklad - " +
+		String s ="Sklad - " +
 				", id=" + id +
 				", pocet kosu=" + basketCount +
-				", velbloudi={");
-
+				", velbloudi={";
+		StringBuilder returnStr = new StringBuilder(s);
 		returnStr.append("\n");
 		for (Camel camel :
 				camelSet) {
@@ -109,6 +120,22 @@ public class Stock extends AbstractNode {
 		return this.id - o.id;
 	}
 
-
+	private static class Refill{
+		
+		public final double time;
+		public final int before;
+		public final int after;
+		
+		public Refill(double time, int before, int after) {
+			this.time = time;
+			this.before = before;
+			this.after = after;
+		}
+		
+		@Override
+		public String toString() {
+			return String.format(Locale.US, "Cas: %.2f, Pred: %d, Po: %d", time, before, after);
+		}
+	}
 
 }

@@ -26,6 +26,9 @@ public class EventManager {
 	public static Graph graph = Graph.getInstance();
 
 	private List<String> outputHistory = new ArrayList<>();
+	
+	/** Cas konce uspesne simulace */
+	public double endTime;
 
 	int numberOftravelingCamels = -1;
 	
@@ -41,7 +44,7 @@ public class EventManager {
 	 */
 	public boolean nextEvent() {
 
-		if (events.size()<1) return false;
+		if (events.size()<1) {return false;}
 		Event e = events.poll();
 		//System.out.println(events.toString());
 
@@ -57,7 +60,7 @@ public class EventManager {
 				errorTask(e);
 				return false;
 			}
-			//default -> System.exit(0);
+			default -> {return false;}
 		}
 		return true;
 	}
@@ -73,7 +76,8 @@ public class EventManager {
 								Math.round(e.time),
 								e.camel.name,
 								e.idInfo + 1));
-		e.camel.home.addCamelToSet(e.camel);//todo nefunguje
+		e.camel.home.addCamelToSet(e.camel);
+		if(numberOftravelingCamels == 0) {endTime = e.time;}
 	}
 
 
@@ -157,8 +161,8 @@ public class EventManager {
 
 		//System.out.println("reffill");
 		Stock refill = ((Stock) Main.graph.getNodebyId(e.idInfo));
-		refill.makeBaskets();
-		if (numberOftravelingCamels != 0) events.add(new Event(e.time + refill.basketMakingTime, EventType.StorageRefill, e.idInfo));
+		refill.makeBaskets(e.time);
+		if (numberOftravelingCamels != 0) {events.add(new Event(e.time + refill.basketMakingTime, EventType.StorageRefill, e.idInfo));}
 	}
 
 
