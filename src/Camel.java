@@ -39,7 +39,9 @@ public class Camel implements Comparable<Camel> {
  	public Deque<MyPath> paths;
  	
  	/** Cas, kdy byl velbloud vytvoren */
- 	public double generationTime;
+ 	public double generatedTime;
+ 	
+ 	
 
 	 private static double druhMaxDistance;
 
@@ -168,10 +170,7 @@ public class Camel implements Comparable<Camel> {
 		} else if (o.maxDistance < this.maxDistance) {
 			return -1;
 		}
-		if(super.equals(o)) {
-			return 0;
-		}
-		return 1;
+		return this.name.compareTo(o.name);
 	}
 	
 	public void addPath(MyPath path) {

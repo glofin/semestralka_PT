@@ -258,9 +258,10 @@ public class EventManager {
 		}
 		//hodit ErrorEvent
 		assert currentPath != null;
-		if (idPathtoOasis==(pathstoOasis.size() - 1) &&
-			maxCamelTypeDistance < pathstoOasis.get(pathstoOasis.size()-1).getMaxDistance()) {
+		if ((idPathtoOasis==(pathstoOasis.size() - 1) &&
+			maxCamelTypeDistance < pathstoOasis.get(pathstoOasis.size()-1).getMaxDistance()) || idPathtoOasis ==pathstoOasis.size()) {
 				events.add(new Event(currentTask.arrivalTime, EventType.ErrorTask, currentTask.idOaza));
+				return;
 			}
 
 		// KONTROLA jestli idealni velbloud zvladne cestu v case
@@ -270,6 +271,7 @@ public class EventManager {
 		//hodit ErrorEvent
 		if (distance != 0 && idealCamelTime > maxTimeforTask) {
 			events.add(new Event(currentTask.arrivalTime, EventType.ErrorTask, currentTask.idOaza));
+			return;
 		}
 
 		// HLEDANI jestli sklad ze ktereho jde akutalni cesta, ma velblouda co to zvladne
@@ -281,6 +283,7 @@ public class EventManager {
 			selectedCamel = generateCamel(currentPath);
 		}
 		selectedCamel.setTask(currentTask);
+		selectedCamel.addPath(currentPath);
 		doTask2(selectedCamel, currentPath);
 	}
 	
@@ -302,8 +305,9 @@ public class EventManager {
 			while (processedBasketsCount < currentTask.basketCount) {
 				Camel camel = findCamelforPath(currentPath);
 				camel.setTask(currentTask);
-				camel.home.removeCamelFromSet(selectedCamel);
-				camelsOnTask.add(selectedCamel);
+				camel.home.removeCamelFromSet(camel);
+				camelsOnTask.add(camel);
+				camel.addPath(currentPath);
 				//planEventsforCamelTravel(currentTask.arrivalTime, currentPath, selectedCamel);
 
 				//posledni velbloud
@@ -406,15 +410,6 @@ public class EventManager {
 		double travellingTime = path.getFullDistance() / camel.getSpeed();
 		int idStock = path.getStartStock().getId();
 		double basketManipTime = basketsManipulationTime(camel);
-
-		/*int busketCntStock = path.getStartStock().getBasketCount();
-		if (busketCntStock < basketCount){
-			int difference = basketCount - busketCntStock;
-			for (Event event :
-					events) {
-				if (event.type == EventType.StorageRefill)
-			}
-		}*/
 
 		//CAMEL DEPARTING
 		addToEventscheckDeadline(
