@@ -3,6 +3,7 @@
  */
 public class Task {
 
+	/** jestli byl vymazan*/
 	private boolean isDeleted = false;
 	public final double arrivalTime;
 	public final int idOaza;

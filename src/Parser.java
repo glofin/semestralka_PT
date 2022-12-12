@@ -2,6 +2,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * Trida na precteni souboru o mapach a odstraneni komentaru z neho
+ */
 public class Parser {
 
     /**

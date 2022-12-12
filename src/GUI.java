@@ -24,7 +24,8 @@ class GUI {
     /** listener posouvajici scroll pane dolu pri vypisu dat*/
     private static final AdjustmentListener outputScrolling = e -> e.getAdjustable().setValue(e.getAdjustable().getMaximum());
 
-    private static final String defaultFilePath = "data/tutorial.txt";
+    /** pro ucely testovani aplikace vychozi soubor s mapou*/
+    private static String defaultFilePath;
 
     /** hlavni okno GUI*/
     private static JFrame frame;
@@ -149,7 +150,11 @@ class GUI {
         frame.getContentPane().add(BorderLayout.CENTER, panel);
         frame.setVisible(true);
     }
-    
+
+    /**
+     * Vytvori slider pro ovladani rychlosti outputu
+     * @return slider
+     */
     private static JSlider setUpSlider() {
         speedSlider = new JSlider(JSlider.HORIZONTAL);
         speedSlider.setMinimum(1);
@@ -296,6 +301,11 @@ class GUI {
 
     }
 
+    /**
+     * Pro nahrani druheho souboru je potreba zmenit printstream
+     * v main.makeDocument na GUI ze souboru
+     * @return printStream do GUI textarea
+     */
     public static PrintStream getPrintStream() {
         return printStream;
     }

@@ -72,7 +72,10 @@ public class EventManager {
 		}
 		return true;
 	}
-	// Metoda nextEvent rozdelena kvuli PMD
+
+	/** Metoda nextEvent rozdelena kvuli PMD
+	 * @param e event
+	 */
 	private boolean nextEvent2(Event e) {
 		switch(e.type ) {
 			case CamelDeparting -> camelDeparting(e);
@@ -322,8 +325,12 @@ public class EventManager {
 		selectedCamel.addPath(currentPath);
 		doTask2(selectedCamel, currentPath);
 	}
-	
-	//Rozdelene z duvodu PMD
+
+	/**Rozdelene z duvodu PMD
+	 *
+	 * @param selectedCamel vybrany velbloud
+	 * @param currentPath vybrana cesta
+	 */
 	private void doTask2(Camel selectedCamel, MyPath currentPath) {
 		/*----------VYSLANI VELBLOUDU----------*/
 		List<Camel> camelsOnTask = new ArrayList<>();
@@ -364,7 +371,10 @@ public class EventManager {
 		checkBaskets(currentPath, currentTask, camelsOnTask);
 
 	}
-	
+
+	/**
+	 * Konrola jestli ma na cestu dostatek kosu
+	 */
 	private void checkBaskets(MyPath currentPath, Task currentTask, List<Camel> camelsOnTask) {
 		int startStockBasketCount = currentPath.getStartStock().getBasketCount();
 		if (currentTask.basketCount > startStockBasketCount){
@@ -384,6 +394,9 @@ public class EventManager {
 		}
 	}
 
+	/**
+	 * Hledani velblouda pro cestu
+	 */
 	private Camel checkCurrentCamels(int idPathtoOasis,List<MyPath> pathstoOasis) {
 		//pokracovani v prochazeni seznamu pathstoOasis
 		for (int i = idPathtoOasis; i < pathstoOasis.size(); i++) {
