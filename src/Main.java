@@ -216,15 +216,15 @@ public class Main {
 	public static String getAppReport(){
 		StringBuilder returnStr = new StringBuilder();
 
-		returnStr.append("PRACUJE SE NA POZADAVCICH:").append("\n");;
+		returnStr.append("PRACUJE SE NA POZADAVCICH:").append("\n");
 		for (Task task : manager.getProcessingTasks()) {
 			returnStr.append(task.toString()).append("\n");
 		}
 		returnStr.append("\n");
 
-		returnStr.append("ZPRACOVANE POZADAVKY:").append("\n");;
+		returnStr.append("ZPRACOVANE POZADAVKY:").append("\n");
 		for (Task task : manager.getFinishedTasks()) {
-			returnStr.append(task.toString()).append("\n");;
+			returnStr.append(task.toString()).append("\n");
 		}
 		returnStr.append("\n");
 
@@ -232,7 +232,7 @@ public class Main {
 		for (AbstractNode node: graph.getNodesList()){
 			if (node.getClass() == Oasis.class) {continue;}
 
-			returnStr.append(node).append("\n");;
+			returnStr.append(node).append("\n");
 		}
 
 		return returnStr.toString();
@@ -242,7 +242,7 @@ public class Main {
 		int count = 0;
 		for (AbstractNode node :
 				graph.getNodesList()) {
-			if (node.getClass()==Stock.class) continue;
+			if (node.getClass()==Stock.class) {continue;}
 			count++;
 		}
 		return count - 1;
@@ -276,7 +276,7 @@ public class Main {
 	
 	private static String stockStats() {
 		String out = "Sklady:\n";
-		for(int i = 0; i < manager.count; i++) {
+		for(int i = 0; i < manager.stockCount; i++) {
 			Stock stock = (Stock) graph.getNodebyId(i);
 			out += String.format(Locale.US, " Sklad %d doplnen %dkrat:\n", i+1, stock.refills.size());
 			for(int j = 0; j < stock.refills.size(); j++) {
@@ -301,7 +301,7 @@ public class Main {
 		double allWait = 0;
 		String out = "";
 		int count = 0;
-		for(int i = 0; i < manager.count; i++) {
+		for(int i = 0; i < manager.stockCount; i++) {
 			Stock stock = (Stock) graph.getNodebyId(i);
 			out += "Pocet ve skladu " + (i+1) + " je " + stock.camelSet.size() +":\n";
 			count += stock.camelSet.size();

@@ -137,23 +137,7 @@ class GUI {
         }*/
 
         //Rychlost slider
-        JSlider speedSlider = new JSlider(JSlider.HORIZONTAL);
-        speedSlider.setMinimum(1);
-        speedSlider.setMaximum(8);
-        speedSlider.setValue(4);
-        speedSlider.setPaintTicks(true);
-        speedSlider.setPaintLabels(true);
-        Hashtable<Integer,JLabel> labelTable = new Hashtable<>();
-        labelTable.put(1, new JLabel("0.25") );
-        labelTable.put(2, new JLabel("0.5") );
-        labelTable.put(3, new JLabel("0.75") );
-        labelTable.put(4, new JLabel("1") );
-        labelTable.put(5, new JLabel("1.25") );
-        labelTable.put(6, new JLabel("1.5") );
-        labelTable.put(7, new JLabel("1.75") );
-        labelTable.put(8, new JLabel("2") );
-        speedSlider.setLabelTable( labelTable );
-        speedSlider.addChangeListener(e -> speedSliderController(speedSlider));
+        JSlider speedSlider = setUpSlider();
 
         //TextArea pro vypis
         outputTA = new JTextArea();
@@ -178,6 +162,27 @@ class GUI {
         frame.getContentPane().add(BorderLayout.PAGE_START, menu);
         frame.getContentPane().add(BorderLayout.CENTER, panel);
         frame.setVisible(true);
+    }
+    
+    private static JSlider setUpSlider() {
+        JSlider speedSlider = new JSlider(JSlider.HORIZONTAL);
+        speedSlider.setMinimum(1);
+        speedSlider.setMaximum(8);
+        speedSlider.setValue(4);
+        speedSlider.setPaintTicks(true);
+        speedSlider.setPaintLabels(true);
+        Hashtable<Integer,JLabel> labelTable = new Hashtable<>();
+        labelTable.put(1, new JLabel("0.25") );
+        labelTable.put(2, new JLabel("0.5") );
+        labelTable.put(3, new JLabel("0.75") );
+        labelTable.put(4, new JLabel("1") );
+        labelTable.put(5, new JLabel("1.25") );
+        labelTable.put(6, new JLabel("1.5") );
+        labelTable.put(7, new JLabel("1.75") );
+        labelTable.put(8, new JLabel("2") );
+        speedSlider.setLabelTable( labelTable );
+        speedSlider.addChangeListener(e -> speedSliderController(speedSlider));
+		return speedSlider;
     }
 
     /*private static void addNewTaskBtnController() {
@@ -266,7 +271,7 @@ class GUI {
     }
 
     private static void nextStepBtnController() {
-        if (Main.nextStepEvent()[1]) showStateBtn.setEnabled(true);
+        if (Main.nextStepEvent()[1]) {showStateBtn.setEnabled(true);}
     }
 
     private static void runToEndBtnController() {
@@ -324,11 +329,11 @@ class GUI {
             }
         });
 
-        if (defaultFilePath != null) startMain(defaultFilePath);
+        if (defaultFilePath != null) {startMain(defaultFilePath);}
         else {
             fileChooser.showOpenDialog(frame);
             File selectedFile = fileChooser.getSelectedFile();
-            if (selectedFile != null) startMain(selectedFile.getAbsolutePath());
+            if (selectedFile != null) {startMain(selectedFile.getAbsolutePath());}
         }
 
         JScrollBar scrollbar = outputSP.getVerticalScrollBar();
@@ -359,7 +364,7 @@ class GUI {
  *
  */
 class CustomOutputStream extends OutputStream {
-    private JTextArea textArea;
+    private final JTextArea textArea;
 
     public CustomOutputStream(JTextArea textArea) {
         this.textArea = textArea;

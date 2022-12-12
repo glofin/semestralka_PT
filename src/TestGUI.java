@@ -1,4 +1,3 @@
-import java.util.Date;
 
 public class TestGUI {
     static int i = 0;
